@@ -5,12 +5,17 @@ require('phaser');
 import Arrow from './assets/sprites/arrow.png';
 import TreasureTrap from './assets/sprites/treasure_trap.png';
 
-
 import Human from './modules/human.js';
+import Style from './style.css';
 
 class Crowdc {
     constructor() {
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', this);
+        this.game = new Phaser.Game(
+            window.innerWidth,
+            window.innerHeight,
+            Phaser.AUTO,
+            'game',
+            this);
     }
 
     preload() {
@@ -18,16 +23,16 @@ class Crowdc {
     }
 
     create() {
+        window.addEventListener('resize', () => {
+            this.game.scale.setGameSize(window.innerWidth, window.innerHeight);
+        });
+
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
         this.game.stage.backgroundColor = '#0072bc';
-
         this.sprite = this.game.add.sprite(400, 300, 'arrow');
         this.sprite.anchor.setTo(0.5, 0.5);
-
         //  Enable Arcade Physics for the sprite
         this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-
         //  Tell it we don't want physics to manage the rotation
         this.sprite.body.allowRotation = false;
 
