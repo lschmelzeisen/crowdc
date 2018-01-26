@@ -14,7 +14,7 @@ export default class Human {
         this.target = getRandomGridPoint(game.width, game.height);
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
-        let speed = getRandomArbitrary(2000, 4000); // random between 2 and 4 s
+        let speed = getRandomArbitrary(500, 5000); // random between 0.5s and 5s
         game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, 60, speed)
 
         if (this.timer)
