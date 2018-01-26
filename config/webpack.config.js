@@ -1,12 +1,18 @@
 const path = require('path');
+const phaserModulePath = path.join(__dirname, '../node_modules/phaser/');
 
-var phaserModulePath = path.join(__dirname, '../node_modules/phaser/');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     entry: './src/index.js',
     devServer: {
         contentBase: './dist'
-    }, module: {
+    }, plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: './src/index.html',
+        }),
+    ], module: {
         loaders: [
             {
                 test: /\.js$/,
