@@ -3,7 +3,7 @@ require('p2');
 require('phaser');
 
 import Arrow from './assets/sprites/arrow.png';
-import Style from './style.css';
+import './style.css';
 
 class Crowdc {
     constructor() {
