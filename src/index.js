@@ -3,6 +3,7 @@ require('p2');
 require('phaser');
 
 import './style.css';
+import Arrow from './assets/sprites/arrow.png';
 import TreasureTrap from './assets/sprites/treasure_trap.png';
 import Human from './modules/human.js';
 
