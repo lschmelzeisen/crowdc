@@ -17,7 +17,15 @@ module.exports = {
             },
             {test: /pixi\.js/, loader: 'expose-loader?PIXI'},
             {test: /phaser-split\.js$/, loader: 'expose-loader?Phaser'},
-            {test: /p2\.js/, loader: 'expose-loader?p2'},]
+            {test: /p2\.js/, loader: 'expose-loader?p2'},
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: [
+                    'file-loader'
+                ]
+            }
+        ],
+
     }, output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist')

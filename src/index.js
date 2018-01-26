@@ -2,6 +2,8 @@ require('pixi');
 require('p2');
 require('phaser');
 
+import Arrow from './assets/sprites/arrow.png';
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', {
     preload: preload,
     create: create,
@@ -10,7 +12,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', {
 });
 
 function preload() {
-    game.load.image('arrow', 'assets/sprites/arrow.png');
+    game.load.image('arrow', Arrow);
 }
 
 var sprite;
