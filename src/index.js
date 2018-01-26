@@ -3,9 +3,10 @@ require('p2');
 require('phaser');
 
 import Arrow from './assets/sprites/arrow.png';
+import Ship from './assets/sprites/thrust_ship.png';
 
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', {
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', {
     preload: preload,
     create: create,
     update: update,
@@ -14,6 +15,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', {
 
 function preload() {
     game.load.image('arrow', Arrow);
+    game.load.image('ship', Ship);
 }
 
 var sprite;
@@ -24,7 +26,7 @@ function create() {
 
     game.stage.backgroundColor = '#0072bc';
 
-    sprite = game.add.sprite(400, 300, 'arrow');
+    sprite = game.add.sprite(400, 300, 'ship');
     sprite.anchor.setTo(0.5, 0.5);
 
     //  Enable Arcade Physics for the sprite
