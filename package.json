@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/lschmelzeisen/crowdc/issues"
   },
-  "homepage": "https://github.com/lschmelzeisen/crowdc#readme"
+  "homepage": "https://github.com/lschmelzeisen/crowdc#readme",
+  "dependencies": {
+    "phaser": "^2.6.2"
+  }
 }
