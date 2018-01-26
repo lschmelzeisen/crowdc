@@ -3,7 +3,10 @@ require('p2');
 require('phaser');
 
 import Arrow from './assets/sprites/arrow.png';
+import TreasureTrap from './assets/sprites/treasure_trap.png';
 
+
+import Human from './modules/human.js';
 
 class Crowdc {
     constructor() {
@@ -11,7 +14,7 @@ class Crowdc {
     }
 
     preload() {
-        this.game.load.image('arrow', Arrow);
+        this.loadAssets()
     }
 
     create() {
@@ -27,6 +30,10 @@ class Crowdc {
 
         //  Tell it we don't want physics to manage the rotation
         this.sprite.body.allowRotation = false;
+
+        this.game.input.onDown.add(() => {
+            new Human(this.game)
+        }, this)
     }
 
     update() {
@@ -36,6 +43,11 @@ class Crowdc {
     render() {
         this.game.debug.spriteInfo(this.sprite, 32, 32);
     }
+
+    loadAssets() {
+        this.game.load.image('trap', TreasureTrap);
+        this.game.load.image('arrow', Arrow);
+    }
 }
 
-var game = new Crowdc();
+new Crowdc();
