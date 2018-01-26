@@ -7,12 +7,7 @@ import Arrow from './assets/sprites/arrow.png';
 
 class Crowdc {
     constructor() {
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', {
-            preload: this.preload,
-            create: this.create,
-            update: this.update,
-            render: this.render
-        })
+        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', this);
     }
 
     preload() {
