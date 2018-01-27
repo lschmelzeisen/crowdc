@@ -11,8 +11,10 @@ export default class Walls {
         let pos = this.state.map.calcCameraCoords(new Phaser.Point(
             this.state.game.input.activePointer.worldX,
             this.state.game.input.activePointer.worldY));
-        pos = this.state.grid.toGridCoords(pos.x, pos.y);
-        if (pos.x >= 0 && pos.x < this.state.map.width && pos.y >= 0 && pos.y < this.state.map.height)
+        if ((pos.x >= 0 && pos.x < this.state.map.width) &&
+            (pos.y >= 0 && pos.y < this.state.map.height)) {
+            pos = this.state.grid.toGridCoords(pos.x, pos.y);
             this.walls.create(pos.x, pos.y, 'wall', 0);
+        }
     }
 }
