@@ -90,10 +90,6 @@ class Crowdc {
     }
 
     addInputListeners() {
-        this.game.input.onDown.add(() => {
-            this.addSprite(Human, this.map)
-        }, this);
-
         let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
         b_key.onDown.add(() => {
             this.addSprite(Human, this.map, 'orb-blue')
