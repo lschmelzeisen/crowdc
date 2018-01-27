@@ -20,13 +20,13 @@ export default class Map {
     handleScrolling() {
         // Move camera position based on cursor keys
         if (this.cursors.up.isDown)
-            this.cameraPosition.y -= 10
+            this.cameraPosition.y -= 10;
         if (this.cursors.down.isDown)
-            this.cameraPosition.y += 10
+            this.cameraPosition.y += 10;
         if (this.cursors.left.isDown)
-            this.cameraPosition.x -= 10
+            this.cameraPosition.x -= 10;
         if (this.cursors.right.isDown)
-            this.cameraPosition.x += 10
+            this.cameraPosition.x += 10;
 
         // Clamp camera position to game world
         this.cameraPosition.clampX(0, this.width);

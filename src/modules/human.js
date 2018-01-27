@@ -2,7 +2,7 @@ import {getRandomGridPoint} from '../helpers/index'
 
 export default class Human {
     constructor(game, image) {
-        this.image = image || 'orb-blue'
+        this.image = image || 'orb-blue';
 
         this.origin = getRandomGridPoint(game.width, game.height);
 

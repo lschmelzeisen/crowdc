@@ -19,7 +19,7 @@ import Human from './modules/human.js';
 
 class Crowdc {
     constructor() {
-        this.spriteCount = 0
+        this.spriteCount = 0;
         this.game = new Phaser.Game(
             window.innerWidth,
             window.innerHeight,
@@ -50,7 +50,7 @@ class Crowdc {
         //  Tell it we don't want physics to manage the rotation
         this.sprite.body.allowRotation = false;
 
-        this.addInputListeners()
+        this.addInputListeners();
 
         // Spawn 10 guys immediately
         for (let _ of Array(10).keys()) {
@@ -98,26 +98,26 @@ class Crowdc {
 
     addSprite(spriteClassName) {
         this.spriteCount++;
-        let args = Array.prototype.slice.call(arguments, 1)
+        let args = Array.prototype.slice.call(arguments, 1);
         new spriteClassName(this.game, ...args)
     }
 
     addInputListeners() {
         this.game.input.onDown.add(() => {
             this.addSprite(Human)
-        }, this)
+        }, this);
 
-        let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B)
+        let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
         b_key.onDown.add(() => {
             this.addSprite(Human, 'orb-blue')
-        })
+        });
 
-        let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R)
+        let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
         r_key.onDown.add(() => {
             this.addSprite(Human, 'orb-red')
-        })
+        });
 
-        let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G)
+        let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
         g_key.onDown.add(() => {
             this.addSprite(Human, 'orb-green')
         })
