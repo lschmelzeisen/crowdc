@@ -3,8 +3,12 @@ export default class Walls {
         this.state = state;
         this.walls = this.state.game.add.spriteBatch();
         state.map.group.add(this.walls);
+    }
 
-        state.game.input.onDown.add(() => this.buildWall());
+    update() {
+        if (this.state.game.input.activePointer.isDown) {
+            this.buildWall();
+        }
     }
 
     buildWall() {
