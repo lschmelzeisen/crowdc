@@ -33,13 +33,16 @@ export class Human {
 
     update() {
         if (this.target) {
+            if (this.isHealthy()) {
+                //this.state.game.physics.arcade.getObjectsAtLocation(this.sprite.body.x, this.sprite.body.y, this.state.sickGroup, (x, y) => this.infect());
+                this.betterGetObjectsAtLocation(this.state.sickGroup, () => {
+                    this.infect()
+                })
+            }
+
             if (Phaser.Rectangle.contains(this.sprite.body, this.target.x, this.target.y)) {
                 this.sprite.body.velocity.setTo(0, 0);
                 this.moveToTarget()
-            }
-
-            if (this.isHealthy()) {
-                this.state.game.physics.arcade.getObjectsAtLocation(this.sprite.body.x, this.sprite.body.y, this.state.sickGroup, (x, y) => this.infect());
             }
         }
 
@@ -103,6 +106,24 @@ export class Human {
         return this.health === HUMAN_HEALTH.SICK;
     }
 
+
+    betterGetObjectsAtLocation(group, callback) {
+        let quadtree = new Phaser.QuadTree(this.state.game.world.bounds.x,
+            this.state.game.world.bounds.y,
+            this.state.game.world.bounds.width,
+            this.state.game.world.bounds.height, 10, 4);
+
+        quadtree.populate(group);
+
+        let spriteBounds = this.sprite.getBounds();
+        let items = quadtree.retrieve(spriteBounds);
+
+        for (let item of items) {
+            let itemBounds = item.sprite.getBounds();
+            if (Phaser.Rectangle.intersects(spriteBounds, itemBounds))
+                callback.call()
+        }
+    }
 }
 
 export class HealthyHumanFactory extends Human {

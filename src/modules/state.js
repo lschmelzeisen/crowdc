@@ -1,5 +1,3 @@
-import {Human} from "./human"
-
 export default class State {
     constructor(game, map) {
         this.spriteCount = 0;
