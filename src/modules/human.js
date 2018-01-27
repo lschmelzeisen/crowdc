@@ -14,6 +14,7 @@ export default class Human {
         this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
         this.moveToTarget();
+        this.sprite.update = () => this.update(this)
     }
 
     moveToTarget() {
@@ -35,11 +36,14 @@ export default class Human {
 
         this.sprite.rotation = this.game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, speed, duration);
 
-        if (this.timer)
-            clearTimeout(this.timer);
+    }
 
-        this.timer = setTimeout(() => {
-            this.moveToTarget(this.game);
-        }, duration)
+    update(human) {
+        if (human.target) {
+            if (Phaser.Rectangle.contains(this.sprite.body, human.target.x, human.target.y)) {
+                this.sprite.body.velocity.setTo(0, 0);
+                this.moveToTarget()
+            }
+        }
     }
 }
