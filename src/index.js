@@ -5,7 +5,6 @@ require('phaser');
 import './style.css';
 
 // Assets
-import Arrow from './assets/sprites/arrow.png';
 import OrbBlue from './assets/custom/orb-blue.png';
 import OrbRed from './assets/custom/orb-red.png';
 import OrbGreen from './assets/custom/orb-green.png';
@@ -43,12 +42,6 @@ class Crowdc {
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.stage.backgroundColor = '#0072bc';
-        this.sprite = this.game.add.sprite(400, 300, 'arrow');
-        this.sprite.anchor.setTo(0.5, 0.5);
-        //  Enable Arcade Physics for the sprite
-        this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-        //  Tell it we don't want physics to manage the rotation
-        this.sprite.body.allowRotation = false;
 
         this.addInputListeners();
 
@@ -60,7 +53,6 @@ class Crowdc {
     }
 
     update() {
-        this.sprite.rotation = this.game.physics.arcade.moveToPointer(this.sprite, 60, this.game.input.activePointer, 500);
         this.map.handleScrolling();
     }
 
@@ -87,7 +79,6 @@ class Crowdc {
         this.game.load.image('orb-blue', OrbBlue);
         this.game.load.image('orb-red', OrbRed);
         this.game.load.image('orb-green', OrbGreen);
-        this.game.load.image('arrow', Arrow);
         this.game.load.image('grass', Grass);
         this.game.load.image('harrier', Harrier);
         this.game.load.image('particle', Particle);
