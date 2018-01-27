@@ -1,12 +1,8 @@
-import {getRandomGridPoint, getRandomArbitrary} from '../helpers/index'
+import {getRandomGridPoint} from '../helpers/index'
 
 export default class Human {
     constructor(game, image) {
-        if (image === undefined || image.length === 0) {
-            this.image = 'orb-blue'
-        } else {
-            this.image = image[0]
-        }
+        this.image = image || 'orb-blue'
 
         this.origin = getRandomGridPoint(game.width, game.height);
 

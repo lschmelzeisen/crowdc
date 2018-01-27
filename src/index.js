@@ -72,7 +72,8 @@ class Crowdc {
 
     addSprite(spriteClassName) {
         this.spriteCount++;
-        new spriteClassName(this.game, Array.prototype.slice.call(arguments, 1))
+        let args = Array.prototype.slice.call(arguments, 1)
+        new spriteClassName(this.game, ...args)
     }
 
     addInputListeners() {
