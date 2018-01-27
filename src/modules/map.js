@@ -81,7 +81,6 @@ export default class Map {
 
         if (this.cameraNeedsUpdate) {
             this.cameraNeedsUpdate = false;
-            console.log('Updating camera...');
 
             this.group.x = -this.cameraPosition.x;
             this.group.y = -this.cameraPosition.y;
