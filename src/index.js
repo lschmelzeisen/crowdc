@@ -108,6 +108,15 @@ class Crowdc {
 
         let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
         g_key.onDown.add(() => this.state.addSprite(Human, 'orb-green'));
+
+        let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+        a_key.onDown.add(() => {
+            for (let _ of Array(10).keys()) {
+                this.state.addSprite(Human, 'orb-blue')
+                this.state.addSprite(Human, 'orb-red')
+                this.state.addSprite(Human, 'orb-green')
+            }
+        });
     }
 }
 
