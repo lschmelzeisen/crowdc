@@ -1,4 +1,5 @@
 const SCROLL_BORDER_SIZE = 50;
+const MAP_BORDER_SIZE = 20;
 
 export default class Map {
     constructor(game, width, height) {
@@ -11,7 +12,11 @@ export default class Map {
 
         this.game.world.resize(this.width, this.height);
 
-        // World Sprite
+        // Map Border
+        this.mapBorder = this.game.add.graphics(0, 0);
+        this.mapBorder.beginFill(0x333333);
+        this.mapBorder.drawRect(-MAP_BORDER_SIZE, -MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE);
+        // Map Sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
 
         // Camera setup
