@@ -7,15 +7,25 @@ export class Human {
     constructor(state, health) {
         this.state = state;
 
-        if (!Human.group)
-            Human.group = this.state.game.add.spriteBatch();
+        if (!Human.healthyGroup)
+            Human.healthyGroup = this.state.game.add.spriteBatch();
+        if (!Human.infectedGroup)
+            Human.infectedGroup = this.state.game.add.spriteBatch();
+        if (!Human.sickGroup)
+            Human.sickGroup = this.state.game.add.spriteBatch();
 
-        this.image = 'orb-blue';
         this.origin = getRandomGridPoint(this.state.map.width, this.state.map.height);
 
-
         // this.sprite = this.state.game.add.sprite(this.origin.x, this.origin.y, this.image);
-        this.sprite = Human.group.create(this.origin.x, this.origin.y, this.image);
+
+        if (health === HUMAN_HEALTH.HEALTHY) {
+            this.sprite = Human.healthyGroup.create(this.origin.x, this.origin.y, 'orb-green');
+        } else if (health === HUMAN_HEALTH.INFECTED) {
+            this.sprite = Human.infectedGroup.create(this.origin.x, this.origin.y, 'orb-blue');
+        } else {
+            this.sprite = Human.sickGroup.create(this.origin.x, this.origin.y, 'orb-red');
+        }
+
         this.sprite.anchor.setTo(0.5, 0.5);
         this.state.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.inputEnabled = true;
@@ -87,20 +97,25 @@ export class Human {
     }
 
     heal() {
+        Human.sickGroup.remove(this.sprite);
         this.health = HUMAN_HEALTH.HEALTHY;
+        Human.healthyGroup.add(this.sprite);
         this.sprite.loadTexture('orb-green')
     }
 
     infect() {
         this.health = HUMAN_HEALTH.INFECTED;
-        this.sprite.loadTexture('orb-blue')
-
+        Human.healthyGroup.remove(this.sprite);
+        this.sprite.loadTexture('orb-blue');
+        Human.infectedGroup.add(this.sprite);
         setTimeout(() => this.makeSick(), 5000)
     }
 
     makeSick() {
         this.health = HUMAN_HEALTH.SICK;
-        this.sprite.loadTexture('orb-red')
+        Human.infectedGroup.remove(this.sprite);
+        this.sprite.loadTexture('orb-red');
+        Human.sickGroup.add(this.sprite);
     }
 
     isHealthy() {
