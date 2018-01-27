@@ -118,6 +118,14 @@ class Crowdc {
         let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
         g_key.onDown.add(() => this.state.addSprite(HealthyHumanFactory));
 
+        let x_key = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
+        x_key.onDown.add(() => {
+            this.state.healthyGroup.removeAll(true)
+            this.state.infectedGroup.removeAll(true)
+            this.state.sickGroup.removeAll(true)
+        });
+
+
         let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         a_key.onDown.add(() => {
             for (let _ of Array(10).keys()) {
