@@ -41,7 +41,7 @@ class Crowdc {
         this.map = new Map(this.game, 512, 512);
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.game.stage.backgroundColor = '#0072bc';
+        this.game.stage.backgroundColor = '#161616';
 
         this.addInputListeners();
 
