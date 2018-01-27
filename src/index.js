@@ -37,7 +37,7 @@ class Crowdc {
             this.resize()
         });
 
-        console.log(this.game.world.width, this.game.world.height);
+        this.game.time.advancedTiming = true; // enable fps logging
 
         this.map = new Map(this.game, 512, 512);
 
@@ -65,19 +65,16 @@ class Crowdc {
     }
 
     render() {
-        // this.game.debug.spriteInfo(this.sprite, 32, 32);
-        this.game.debug.inputInfo(32, 32);
-        this.game.debug.cameraInfo(this.game.camera, 32, 128);
-
         let x = 32;
-        let y = 96;
+        let y = 32;
         let yi = 16;
-        this.game.time.advancedTiming = true // enable fps logging
 
-        // debug infos
-        this.game.debug.spriteInfo(this.sprite, 32, 32);
-        this.game.debug.text('Sprite count: ' + this.spriteCount, x, y += yi, '#fff', 'sans 10px');
         this.game.debug.text(`FPS (now/min/max): ${this.game.time.fps}/${this.game.time.fpsMin}/${this.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
+
+        this.game.debug.text('Sprite count: ' + this.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+
+        this.game.debug.inputInfo(x, y += 2 * yi);
+        this.game.debug.cameraInfo(this.game.camera, x, y += 6 * yi);
     }
 
     resize() {
