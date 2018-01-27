@@ -11,6 +11,7 @@ export default class State {
         let spriteWrapper = new spriteClassName(this, ...args);
         this.spriteCount++;
         this.sprites.push(spriteWrapper);
+        return spriteWrapper;
     }
 
     removeSprite(spriteWrapper) {

@@ -14,7 +14,7 @@ import Particle from './assets/misc/particle_smallest.png';
 
 // JS
 import Map from './modules/map.js';
-import Human from './modules/human.js';
+import {HealthyHumanFactory, InfectedHumanFactory, SickHumanFactory} from './modules/human.js';
 import State from './modules/state.js';
 
 class Crowdc {
@@ -57,7 +57,7 @@ class Crowdc {
         crowdc.addInputListeners();
 
         // Spawn 1 red guy immediately
-        crowdc.state.addSprite(Human, 'orb-red');
+        crowdc.state.addSprite(SickHumanFactory);
     }
 
     update(crowdc) {
@@ -98,20 +98,20 @@ class Crowdc {
 
     addInputListeners() {
         let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
-        b_key.onDown.add(() => this.state.addSprite(Human, 'orb-blue'));
+        b_key.onDown.add(() => this.state.addSprite(InfectedHumanFactory));
 
         let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
-        r_key.onDown.add(() => this.state.addSprite(Human, 'orb-red'));
+        r_key.onDown.add(() => this.state.addSprite(SickHumanFactory));
 
         let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
-        g_key.onDown.add(() => this.state.addSprite(Human, 'orb-green'));
+        g_key.onDown.add(() => this.state.addSprite(HealthyHumanFactory));
 
         let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         a_key.onDown.add(() => {
             for (let _ of Array(10).keys()) {
-                this.state.addSprite(Human, 'orb-blue')
-                this.state.addSprite(Human, 'orb-red')
-                this.state.addSprite(Human, 'orb-green')
+                this.state.addSprite(HealthyHumanFactory)
+                this.state.addSprite(InfectedHumanFactory)
+                this.state.addSprite(SickHumanFactory)
             }
         });
     }
