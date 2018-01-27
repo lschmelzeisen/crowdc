@@ -23,25 +23,24 @@ export default class Human {
         // Used for debugging. We want to view where the red orb is going. TODO: REMOVE!
         if (this.image === 'orb-red') {
             if (this.targetSprite)
-                this.targetSprite.destroy()
+                this.targetSprite.destroy();
 
             this.targetSprite = game.add.sprite(this.target.x, this.target.y, 'orb-red');
             this.targetSprite.anchor.setTo(0.5, 0.5);
-            this.targetSprite.scale.setTo(0.5, 0.5)
+            this.targetSprite.scale.setTo(0.5, 0.5);
         }
 
-        let speed = getRandomArbitrary(500, 5000); // random between 0.5s and 5s
-        this.sprite.rotation = game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, 0, speed);
+        let speed = 200; // px/s
+        let distance = game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
+        let duration = (distance / speed) * 1000;
+
+        this.sprite.rotation = game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, speed, duration);
 
         if (this.timer)
             clearTimeout(this.timer);
 
         this.timer = setTimeout(() => {
             this.moveToTarget(game);
-        }, speed)
-    }
-
-    showTarget(game) {
-
+        }, duration)
     }
 }
