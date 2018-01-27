@@ -12,6 +12,13 @@ export default class Human {
         this.sprite = this.game.add.sprite(this.origin.x, this.origin.y, this.image);
         this.sprite.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+        this.sprite.inputEnabled = true
+        this.sprite.events.onInputDown.add(() => {
+            if (this.targetSprite)
+                this.targetSprite.destroy();
+            this.sprite.destroy();
+        }, this);
+
 
         this.moveToTarget();
         this.sprite.update = () => this.update(this)
@@ -30,12 +37,11 @@ export default class Human {
             this.targetSprite.scale.setTo(0.5, 0.5);
         }
 
-        let speed = 200; // px/s
+        const SPEED = 150; // px/s
         let distance = this.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
-        let duration = (distance / speed) * 1000;
+        let duration = (distance / SPEED) * 1000;
 
-        this.sprite.rotation = this.game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, speed, duration);
-
+        this.sprite.rotation = this.game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, SPEED, duration);
     }
 
     update(human) {
