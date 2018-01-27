@@ -1,4 +1,8 @@
 const SCROLL_BORDER_SIZE = 50;
+const SCROLL_SPEED = 20;
+const ZOOM_SPEED = 5;
+const MIN_ZOOM_FACTOR = 0.2;
+const MAX_ZOOM_FACTOR = 5;
 const MAP_BORDER_SIZE = 20;
 
 export default class Map {
@@ -27,7 +31,11 @@ export default class Map {
         // Map border
         this.mapBorder = this.game.add.graphics(0, 0);
         this.mapBorder.beginFill(0x333333);
-        this.mapBorder.drawRect(-MAP_BORDER_SIZE, -MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE, this.height + 2 * MAP_BORDER_SIZE);
+        this.mapBorder.drawRect(
+            -MAP_BORDER_SIZE,
+            -MAP_BORDER_SIZE,
+            this.width + 2 * MAP_BORDER_SIZE,
+            this.height + 2 * MAP_BORDER_SIZE);
         this.group.add(this.mapBorder);
         // Map sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
@@ -73,7 +81,6 @@ export default class Map {
 
         if (this.cameraNeedsUpdate) {
             this.cameraNeedsUpdate = false;
-            console.log('Updating Camera...');
 
             this.group.x = -this.cameraPosition.x;
             this.group.y = -this.cameraPosition.y;
@@ -127,8 +134,8 @@ export default class Map {
     }
 
     handleZoom(event) {
-        this.zoomFactor += -event.deltaY / 200;
-        this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, 0.2, 5);
+        this.zoomFactor += -event.deltaY * ZOOM_SPEED / 1000;
+        this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, MIN_ZOOM_FACTOR, MAX_ZOOM_FACTOR);
 
         // this.game.world.scale.set(this.zoomFactor);
         this.group.scale.set(this.zoomFactor);
@@ -136,22 +143,22 @@ export default class Map {
     }
 
     cameraMoveLeft() {
-        this.cameraPosition.x -= 10 / this.zoomFactor;
+        this.cameraPosition.x -= SCROLL_SPEED / this.zoomFactor;
         this.cameraNeedsUpdate = true;
     }
 
     cameraMoveRight() {
-        this.cameraPosition.x += 10 / this.zoomFactor;
+        this.cameraPosition.x += SCROLL_SPEED / this.zoomFactor;
         this.cameraNeedsUpdate = true;
     }
 
     cameraMoveUp() {
-        this.cameraPosition.y -= 10 / this.zoomFactor;
+        this.cameraPosition.y -= SCROLL_SPEED / this.zoomFactor;
         this.cameraNeedsUpdate = true;
     }
 
     cameraMoveDown() {
-        this.cameraPosition.y += 10 / this.zoomFactor;
+        this.cameraPosition.y += SCROLL_SPEED / this.zoomFactor;
         this.cameraNeedsUpdate = true;
     }
 
