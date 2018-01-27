@@ -31,6 +31,7 @@ export class Human {
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputDown.add(() => this.destroy(), this);
 
+
         this.moveToTarget();
         this.sprite.update = () => this.update();
         this.setHealth(health)
@@ -53,6 +54,10 @@ export class Human {
                 this.moveToTarget()
             }
 
+            // this.state.game.physics.arcade.getObjectsAtLocation(this.sprite.body.x,this.sprite.body.y, Human.infectedGroup, function (x,y) {
+            //         console.log(x + " " + y);
+            //     });
+
             for (let outerSpriteWrapper of this.state.sprites) {
                 for (let innerSpriteWrapper of this.state.sprites) {
                     if (outerSpriteWrapper !== innerSpriteWrapper) {
@@ -70,6 +75,7 @@ export class Human {
                 }
             }
         }
+
     }
 
     destroy() {
