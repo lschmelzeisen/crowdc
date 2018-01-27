@@ -73,6 +73,7 @@ class Crowdc {
 
     update(crowdc) {
         crowdc.state.map.handleScrolling();
+        crowdc.state.walls.update();
     }
 
     render(crowdc) {
