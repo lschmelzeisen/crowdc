@@ -22,9 +22,6 @@ export class Human {
 
     moveToTarget() {
         this.target = getRandomGridPoint(this.state.map.width, this.state.map.height);
-        this.target = this.state.game.add.sprite(this.target.x, this.target.y);
-        this.state.map.group.add(this.target);
-        this.state.game.physics.enable(this.target, Phaser.Physics.ARCADE);
 
         if (this.targetSprite)
             this.targetSprite.destroy();
@@ -48,7 +45,7 @@ export class Human {
                 })
             }
 
-            if (this.state.game.physics.arcade.distanceBetween(this.sprite, this.target) < 3) {
+            if (this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) < 3) {
                 this.sprite.body.velocity.setTo(0, 0);
                 this.moveToTarget()
             }
