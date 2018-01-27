@@ -5,6 +5,7 @@ require('phaser');
 import './style.css';
 import Arrow from './assets/sprites/arrow.png';
 import OrbBlue from './assets/custom/orb-blue.png';
+import OrbRed from './assets/custom/orb-red.png';
 import Human from './modules/human.js';
 
 class Crowdc {
@@ -44,6 +45,7 @@ class Crowdc {
         for (let _ of Array(10).keys()) {
             this.addSprite(Human)
         }
+        this.addSprite(Human, 'orb-red')
     }
 
     update() {
@@ -63,12 +65,13 @@ class Crowdc {
 
     loadAssets() {
         this.game.load.image('orb-blue', OrbBlue);
+        this.game.load.image('orb-red', OrbRed);
         this.game.load.image('arrow', Arrow);
     }
 
     addSprite(spriteClassName) {
         this.spriteCount++;
-        new spriteClassName(this.game)
+        new spriteClassName(this.game, Array.prototype.slice.call(arguments, 1))
     }
 }
 
