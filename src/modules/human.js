@@ -41,14 +41,13 @@ export class Human {
                     if (outerSpriteWrapper !== innerSpriteWrapper) {
                         let boundsA = outerSpriteWrapper.sprite.getBounds();
                         let boundsB = innerSpriteWrapper.sprite.getBounds();
-
-                        if (Phaser.Rectangle.intersects(boundsA, boundsB)) {
-                            // infect each other
-                            if (outerSpriteWrapper.isSick() && innerSpriteWrapper.isHealthy()) {
+                        // infect each other
+                        if (outerSpriteWrapper.isSick() && innerSpriteWrapper.isHealthy()) {
+                            if (Phaser.Rectangle.intersects(boundsA, boundsB))
                                 innerSpriteWrapper.infect();
-                            } else if (innerSpriteWrapper.isSick() && outerSpriteWrapper.isHealthy()) {
+                        } else if (innerSpriteWrapper.isSick() && outerSpriteWrapper.isHealthy()) {
+                            if (Phaser.Rectangle.intersects(boundsA, boundsB))
                                 outerSpriteWrapper.infect();
-                            }
                         }
                     }
                 }
