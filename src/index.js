@@ -7,6 +7,8 @@ import './style.css';
 // Assets
 import Arrow from './assets/sprites/arrow.png';
 import OrbBlue from './assets/custom/orb-blue.png';
+import OrbRed from './assets/custom/orb-red.png';
+import OrbGreen from './assets/custom/orb-green.png';
 import Grass from './assets/tests/grass1.png';
 import Harrier from './assets/tests/harrier3.png';
 import Particle from './assets/misc/particle_smallest.png';
@@ -17,6 +19,7 @@ import Human from './modules/human.js';
 
 class Crowdc {
     constructor() {
+        this.spriteCount = 0
         this.game = new Phaser.Game(
             window.innerWidth,
             window.innerHeight,
@@ -47,9 +50,13 @@ class Crowdc {
         //  Tell it we don't want physics to manage the rotation
         this.sprite.body.allowRotation = false;
 
-        this.game.input.onDown.add(() => {
-            new Human(this.game)
-        }, this)
+        this.addInputListeners()
+
+        // Spawn 10 guys immediately
+        for (let _ of Array(10).keys()) {
+            this.addSprite(Human)
+        }
+        this.addSprite(Human, 'orb-red')
     }
 
     update() {
@@ -61,6 +68,16 @@ class Crowdc {
         // this.game.debug.spriteInfo(this.sprite, 32, 32);
         this.game.debug.inputInfo(32, 32);
         this.game.debug.cameraInfo(this.game.camera, 32, 128);
+
+        let x = 32;
+        let y = 96;
+        let yi = 16;
+        this.game.time.advancedTiming = true // enable fps logging
+
+        // debug infos
+        this.game.debug.spriteInfo(this.sprite, 32, 32);
+        this.game.debug.text('Sprite count: ' + this.spriteCount, x, y += yi, '#fff', 'sans 10px');
+        this.game.debug.text(`FPS (now/min/max): ${this.game.time.fps}/${this.game.time.fpsMin}/${this.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
     }
 
     resize() {
@@ -71,10 +88,39 @@ class Crowdc {
 
     loadAssets() {
         this.game.load.image('orb-blue', OrbBlue);
+        this.game.load.image('orb-red', OrbRed);
+        this.game.load.image('orb-green', OrbGreen);
         this.game.load.image('arrow', Arrow);
         this.game.load.image('grass', Grass);
         this.game.load.image('harrier', Harrier);
         this.game.load.image('particle', Particle);
+    }
+
+    addSprite(spriteClassName) {
+        this.spriteCount++;
+        let args = Array.prototype.slice.call(arguments, 1)
+        new spriteClassName(this.game, ...args)
+    }
+
+    addInputListeners() {
+        this.game.input.onDown.add(() => {
+            this.addSprite(Human)
+        }, this)
+
+        let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B)
+        b_key.onDown.add(() => {
+            this.addSprite(Human, 'orb-blue')
+        })
+
+        let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R)
+        r_key.onDown.add(() => {
+            this.addSprite(Human, 'orb-red')
+        })
+
+        let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G)
+        g_key.onDown.add(() => {
+            this.addSprite(Human, 'orb-green')
+        })
     }
 }
 

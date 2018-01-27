@@ -1,11 +1,13 @@
-import {getRandomGridPoint, getRandomArbitrary} from '../helpers/index'
+import {getRandomGridPoint} from '../helpers/index'
 
 export default class Human {
-    constructor(game) {
+    constructor(game, image) {
+        this.image = image || 'orb-blue'
+
         this.origin = getRandomGridPoint(game.width, game.height);
 
-        this.sprite = game.add.sprite(this.origin.x, this.origin.y, 'orb-blue');
-        //this.sprite.scale.setTo(0.2, 0.2)
+        this.sprite = game.add.sprite(this.origin.x, this.origin.y, this.image);
+        this.sprite.anchor.setTo(0.5, 0.5);
         game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
         this.moveToTarget(game)
@@ -14,14 +16,27 @@ export default class Human {
     moveToTarget(game) {
         this.target = getRandomGridPoint(game.width, game.height);
 
-        let speed = getRandomArbitrary(500, 5000); // random between 0.5s and 5s
-        this.sprite.rotation = game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, 0, speed)
+        // Used for debugging. We want to view where the red orb is going. TODO: REMOVE!
+        if (this.image === 'orb-red') {
+            if (this.targetSprite)
+                this.targetSprite.destroy();
+
+            this.targetSprite = game.add.sprite(this.target.x, this.target.y, 'orb-red');
+            this.targetSprite.anchor.setTo(0.5, 0.5);
+            this.targetSprite.scale.setTo(0.5, 0.5);
+        }
+
+        let speed = 200; // px/s
+        let distance = game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
+        let duration = (distance / speed) * 1000;
+
+        this.sprite.rotation = game.physics.arcade.moveToXY(this.sprite, this.target.x, this.target.y, speed, duration);
 
         if (this.timer)
             clearTimeout(this.timer);
 
         this.timer = setTimeout(() => {
-            this.moveToTarget(game)
-        }, speed)
+            this.moveToTarget(game);
+        }, duration)
     }
 }
