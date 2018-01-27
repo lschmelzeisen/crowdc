@@ -1,3 +1,4 @@
+import {drawPlus} from "../helpers";
 
 export default class Grid {
     constructor(state) {
@@ -6,12 +7,12 @@ export default class Grid {
 
         for (var i = 0; i <= state.map.width / 32; i++)
             for (var j = 0; j <= state.map.height / 32; j++) {
-                this.graphics.beginFill(0x000000, 1);
-                this.graphics.drawCircle(i*32, j*32, 3);
+                this.graphics.lineStyle(2, 0x222222, 1);
+                drawPlus(this.graphics, i * 32, j * 32, 4);
             }
     }
 
-    toGridCoords(x,y) {
-        return new Phaser.Point(x - x % 32,y - y % 32);
+    toGridCoords(x, y) {
+        return new Phaser.Point(x - x % 32, y - y % 32);
     }
 }

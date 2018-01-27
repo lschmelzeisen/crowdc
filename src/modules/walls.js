@@ -1,5 +1,3 @@
-
-
 export default class Walls {
     constructor(state) {
         this.state = state;
@@ -14,6 +12,6 @@ export default class Walls {
             this.state.game.input.activePointer.worldX,
             this.state.game.input.activePointer.worldY));
         pos = this.state.grid.toGridCoords(pos.x, pos.y);
-        this.walls.create(pos.x,pos.y,'wall',0);
+        this.walls.create(pos.x, pos.y, 'wall', 0);
     }
 }

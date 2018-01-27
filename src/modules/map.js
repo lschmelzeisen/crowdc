@@ -1,9 +1,12 @@
+import {drawPlus} from "../helpers";
+
 const SCROLL_BORDER_SIZE = 50;
 const SCROLL_SPEED = 20;
 const ZOOM_SPEED = 5;
 const MIN_ZOOM_FACTOR = 0.2;
 const MAX_ZOOM_FACTOR = 5;
 const MAP_BORDER_SIZE = 20;
+const SHOW_CAMERA_INDICATOR = false;
 
 export default class Map {
     constructor(game, width, height) {
@@ -40,10 +43,14 @@ export default class Map {
         // Map sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
         this.group.add(this.sprite);
-        // Camera indicator sprite
-        this.cameraIndicator = this.game.add.sprite(0, 0, 'particle');
-        this.cameraIndicator.anchor.set(0.5, 0.5);
-        this.group.add(this.cameraIndicator);
+
+        if (SHOW_CAMERA_INDICATOR) {
+            // Camera indicator sprite
+            this.cameraIndicator = this.game.add.graphics(0, 0);
+            this.group.add(this.cameraIndicator);
+            this.cameraIndicator.lineStyle(1, 0xFF0000, 1);
+            drawPlus(this.cameraIndicator, 0, 0, 6);
+        }
     }
 
     handleScrolling() {
@@ -85,9 +92,11 @@ export default class Map {
             this.group.x = -this.cameraPosition.x;
             this.group.y = -this.cameraPosition.y;
 
-            // Reposition camera indicator
-            this.cameraIndicator.x = (this.cameraPosition.x + this.game.width / 2) / this.zoomFactor;
-            this.cameraIndicator.y = (this.cameraPosition.y + this.game.height / 2) / this.zoomFactor;
+            if (SHOW_CAMERA_INDICATOR) {
+                // Reposition camera indicator
+                this.cameraIndicator.x = (this.cameraPosition.x + this.game.width / 2) / this.zoomFactor;
+                this.cameraIndicator.y = (this.cameraPosition.y + this.game.height / 2) / this.zoomFactor;
+            }
         }
 
         // Change mouse icon if it's used for scrolling
