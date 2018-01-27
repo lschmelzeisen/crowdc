@@ -31,6 +31,14 @@ export default class State {
             this.sprites.splice(index, 1);
         }
     }
+
+    resetSprites () {
+        this.healthyGroup.removeAll(true)
+        this.infectedGroup.removeAll(true)
+        this.sickGroup.removeAll(true)
+        this.sprites = []
+        this.spriteCount = 0
+    }
 }
 
 

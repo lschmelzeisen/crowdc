@@ -121,9 +121,7 @@ class Crowdc {
 
         let x_key = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
         x_key.onDown.add(() => {
-            this.state.healthyGroup.removeAll(true)
-            this.state.infectedGroup.removeAll(true)
-            this.state.sickGroup.removeAll(true)
+            this.state.resetSprites()
         });
 
 
