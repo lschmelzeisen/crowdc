@@ -4,84 +4,84 @@ const MAP_BORDER_SIZE = 20;
 export default class Map {
     constructor(game, width, height) {
         this.game = game;
-        this.canvas = document.getElementById('game').firstChild;
         this.width = width;
         this.height = height;
 
         this.cursors = game.input.keyboard.createCursorKeys();
+        this.canvas = document.getElementById('game').firstChild;
+        this.canvas.addEventListener('wheel', (event) => this.handleZoom(event));
 
-        // Set world size to be bigger than the window so camera can be moved
-        // TODO: find out how these parameters have to be set in relation to window size
-        this.game.world.setBounds(-5000, -5000, 10000, 10000);
-        // Move camera half the size of the viewport back so the pivot point is in the center of our view
-        this.game.camera.x = -game.width / 2;
-        this.game.camera.y = -game.height / 2;
-
-        // Initialize camera position in center of world
-        this.cameraPosition = new Phaser.Point(this.width / 2, this.height / 2);
-
-        // Mouse cursor style tracker
-        this.mouseCursorStyle = 'auto';
-
-        // Zoom setup
         this.zoomFactor = 1.0;
-        this.canvas.addEventListener('wheel', (event) => {
-            this.zoomFactor += -event.deltaY / 200;
-            this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, 0.2, 5);
-            this.game.world.scale.set(this.zoomFactor);
-        });
+        this.cameraPosition = new Phaser.Point(0, 0);
+        this.cameraAllowXMovement = false;
+        this.cameraAllowYMovement = false;
+        this.cameraNeedsUpdate = false;
+        this.mouseCursorStyle = 'auto';
+        this.handleResize();
+
+        // Group that will be moved/scaled to simulate camera movement/zoom.
+        // Add all elements that should be in the game world, i.e. not in the
+        // UI, to this group!
+        this.group = this.game.add.group(this.game.world, 'map.group');
 
         // Map border
         this.mapBorder = this.game.add.graphics(0, 0);
         this.mapBorder.beginFill(0x333333);
         this.mapBorder.drawRect(-MAP_BORDER_SIZE, -MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE, this.height + 2 * MAP_BORDER_SIZE);
+        this.group.add(this.mapBorder);
         // Map sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
+        this.group.add(this.sprite);
         // Camera indicator sprite
-        this.cameraIndicator = this.game.add.sprite(100, 100, 'particle');
+        this.cameraIndicator = this.game.add.sprite(0, 0, 'particle');
+        this.cameraIndicator.anchor.set(0.5, 0.5);
+        this.group.add(this.cameraIndicator);
     }
 
     handleScrolling() {
-        // Booleans that tracks if moues is in position for tracking
+        // Booleans that tracks if moues is in scroll trigger area
         let mouseLeft = false;
         let mouseRight = false;
         let mouseUp = false;
         let mouseDown = false;
 
-        // Change logical camera position
-        if (this.game.scale.width / this.zoomFactor >= this.width) {
-            this.cameraPosition.x = this.width / 2;
-        } else {
+        if (this.cameraAllowXMovement) {
             mouseLeft = this.game.input.x < SCROLL_BORDER_SIZE;
             mouseRight = this.game.input.x > this.game.scale.width - SCROLL_BORDER_SIZE;
 
             if (this.cursors.left.isDown || mouseLeft)
-                this.cameraPosition.x -= 10 / this.zoomFactor;
+                this.cameraMoveLeft();
             if (this.cursors.right.isDown || mouseRight)
-                this.cameraPosition.x += 10 / this.zoomFactor;
+                this.cameraMoveRight();
 
-            const unscrollableAreaSize = this.game.scale.width / 2 / this.zoomFactor - MAP_BORDER_SIZE;
-            this.cameraPosition.clampX(unscrollableAreaSize, this.width - unscrollableAreaSize);
+            if (this.cameraNeedsUpdate)
+                this.cameraClampX();
         }
-        if (this.game.scale.height / this.zoomFactor >= this.height) {
-            this.cameraPosition.y = this.height / 2;
-        } else {
+
+        if (this.cameraAllowYMovement) {
             mouseUp = this.game.input.y < SCROLL_BORDER_SIZE;
             mouseDown = this.game.input.y > this.game.scale.height - SCROLL_BORDER_SIZE;
 
             if (this.cursors.up.isDown || mouseUp)
-                this.cameraPosition.y -= 10 / this.zoomFactor;
+                this.cameraMoveUp();
             if (this.cursors.down.isDown || mouseDown)
-                this.cameraPosition.y += 10 / this.zoomFactor;
+                this.cameraMoveDown();
 
-            const unscrollableAreaSize = this.game.scale.height / 2 / this.zoomFactor - MAP_BORDER_SIZE;
-            this.cameraPosition.clampY(unscrollableAreaSize, this.height - unscrollableAreaSize);
+            if (this.cameraNeedsUpdate)
+                this.cameraClampY();
         }
 
-        this.game.world.pivot = this.cameraPosition;
+        if (this.cameraNeedsUpdate) {
+            this.cameraNeedsUpdate = false;
+            console.log('Updating Camera...');
 
-        this.cameraIndicator.x = this.cameraPosition.x - this.cameraIndicator.width / 2;
-        this.cameraIndicator.y = this.cameraPosition.y - this.cameraIndicator.height / 2;
+            this.group.x = -this.cameraPosition.x;
+            this.group.y = -this.cameraPosition.y;
+
+            // Reposition camera indicator
+            this.cameraIndicator.x = (this.cameraPosition.x + this.game.width / 2) / this.zoomFactor;
+            this.cameraIndicator.y = (this.cameraPosition.y + this.game.height / 2) / this.zoomFactor;
+        }
 
         // Change mouse icon if it's used for scrolling
         let oldMouseCursorStyle = this.mouseCursorStyle;
@@ -104,13 +104,78 @@ export default class Map {
         } else {
             this.mouseCursorStyle = 'auto';
         }
-        if (this.mouseCursorStyle != oldMouseCursorStyle) {
+        if (this.mouseCursorStyle != oldMouseCursorStyle)
             this.canvas.style.cursor = this.mouseCursorStyle;
-        }
     }
 
     handleResize() {
-        this.game.camera.x = -this.game.width / 2;
-        this.game.camera.y = -this.game.height / 2;
+        if (this.game.scale.width / this.zoomFactor - 2 * MAP_BORDER_SIZE >= this.width) {
+            this.cameraCenterX();
+            this.cameraAllowXMovement = false;
+        } else {
+            this.cameraClampX();
+            this.cameraAllowXMovement = true;
+        }
+
+        if (this.game.scale.height / this.zoomFactor - 2 * MAP_BORDER_SIZE >= this.height) {
+            this.cameraCenterY();
+            this.cameraAllowYMovement = false;
+        } else {
+            this.cameraClampY();
+            this.cameraAllowYMovement = true;
+        }
+    }
+
+    handleZoom(event) {
+        this.zoomFactor += -event.deltaY / 200;
+        this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, 0.2, 5);
+
+        // this.game.world.scale.set(this.zoomFactor);
+        this.group.scale.set(this.zoomFactor);
+        this.handleResize();
+    }
+
+    cameraMoveLeft() {
+        this.cameraPosition.x -= 10 / this.zoomFactor;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraMoveRight() {
+        this.cameraPosition.x += 10 / this.zoomFactor;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraMoveUp() {
+        this.cameraPosition.y -= 10 / this.zoomFactor;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraMoveDown() {
+        this.cameraPosition.y += 10 / this.zoomFactor;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraCenterX() {
+        this.cameraPosition.x = -(this.game.width - this.width * this.zoomFactor) / 2;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraCenterY() {
+        this.cameraPosition.y = -(this.game.height - this.height * this.zoomFactor) / 2;
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraClampX() {
+        this.cameraPosition.clampX(
+            -MAP_BORDER_SIZE * this.zoomFactor,
+            (this.width + MAP_BORDER_SIZE) * this.zoomFactor - this.game.width);
+        this.cameraNeedsUpdate = true;
+    }
+
+    cameraClampY() {
+        this.cameraPosition.clampY(
+            -MAP_BORDER_SIZE * this.zoomFactor,
+            (this.height + MAP_BORDER_SIZE) * this.zoomFactor - this.game.height);
+        this.cameraNeedsUpdate = true;
     }
 }
