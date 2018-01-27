@@ -1,9 +1,17 @@
+import {Human} from "./human"
+
 export default class State {
     constructor(game, map) {
         this.spriteCount = 0;
         this.sprites = [];
         this.game = game;
         this.map = map;
+    }
+
+    setup () {
+        this.healthyGroup = this.game.add.spriteBatch(null, 'healthy');
+        this.infectedGroup = this.game.add.spriteBatch(null, 'infected');
+        this.sickGroup = this.game.add.spriteBatch(null, 'sick');
     }
 
     addSprite(spriteClassName) {

@@ -52,6 +52,7 @@ class Crowdc {
 
         crowdc.state.game = this.game;
         crowdc.state.map = new Map(this.game, 512, 512);
+        crowdc.state.setup();
 
         crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
         crowdc.game.stage.backgroundColor = '#161616';
