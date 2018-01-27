@@ -11,9 +11,14 @@ import OrbGreen from './assets/custom/orb-green.png';
 import Grass from './assets/tests/grass1.png';
 import Harrier from './assets/tests/harrier3.png';
 import Particle from './assets/misc/particle_smallest.png';
+import Wall from './assets/tilemaps/tiles/gridtiles.png';
 
 // JS
 import Map from './modules/map.js';
+import Grid from './modules/grid.js';
+import Walls from './modules/walls.js';
+
+
 import {HealthyHumanFactory, InfectedHumanFactory, SickHumanFactory} from './modules/human.js';
 import State from './modules/state.js';
 import {getRandomGridPoint} from './helpers/index'
@@ -53,6 +58,9 @@ class Crowdc {
         crowdc.state.game = this.game;
         crowdc.state.map = new Map(this.game, 512, 512);
         crowdc.state.setup();
+
+        crowdc.state.grid = new Grid(crowdc.state);
+        crowdc.state.walls = new Walls(crowdc.state);
 
         crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
         crowdc.game.stage.backgroundColor = '#161616';
@@ -97,6 +105,7 @@ class Crowdc {
         this.game.load.image('grass', Grass);
         this.game.load.image('harrier', Harrier);
         this.game.load.image('particle', Particle);
+        this.game.load.spritesheet('wall',Wall,32,32);
     }
 
     addInputListeners() {
