@@ -1,4 +1,5 @@
 const SCROLL_BORDER_SIZE = 50;
+const MAP_BORDER_SIZE = 20;
 
 export default class Map {
     constructor(game, width, height) {
@@ -11,7 +12,11 @@ export default class Map {
 
         this.game.world.resize(this.width, this.height);
 
-        // World Sprite
+        // Map Border
+        this.mapBorder = this.game.add.graphics(0, 0);
+        this.mapBorder.beginFill(0x333333);
+        this.mapBorder.drawRect(-MAP_BORDER_SIZE, -MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE, this.height + 2 * MAP_BORDER_SIZE);
+        // Map Sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
 
         // Camera setup
@@ -21,20 +26,55 @@ export default class Map {
     }
 
     handleScrolling() {
-        const mouseUp = this.game.input.y < SCROLL_BORDER_SIZE;
-        const mouseDown = this.game.input.y > this.game.scale.height - SCROLL_BORDER_SIZE;
-        const mouseLeft = this.game.input.x < SCROLL_BORDER_SIZE;
-        const mouseRight = this.game.input.x > this.game.scale.width - SCROLL_BORDER_SIZE;
+        // Booleans that tracks if moues is in position for tracking
+        let mouseLeft = false;
+        let mouseRight = false;
+        let mouseUp = false;
+        let mouseDown = false;
 
-        // Move camera position based on cursor keys or mouse
-        if (this.cursors.up.isDown || mouseUp)
-            this.cameraPosition.y -= 10;
-        if (this.cursors.down.isDown || mouseDown)
-            this.cameraPosition.y += 10;
-        if (this.cursors.left.isDown || mouseLeft)
-            this.cameraPosition.x -= 10;
-        if (this.cursors.right.isDown || mouseRight)
-            this.cameraPosition.x += 10;
+        // Change logical camera position
+        if (this.game.scale.width >= this.width) {
+            this.cameraPosition.x = this.width / 2;
+        } else {
+            mouseLeft = this.game.input.x < SCROLL_BORDER_SIZE;
+            mouseRight = this.game.input.x > this.game.scale.width - SCROLL_BORDER_SIZE;
+
+            if (this.cursors.left.isDown || mouseLeft)
+                this.cameraPosition.x -= 10;
+            if (this.cursors.right.isDown || mouseRight)
+                this.cameraPosition.x += 10;
+
+            this.cameraPosition.clampX(
+                this.game.scale.width / 2 - MAP_BORDER_SIZE,
+                this.width - (this.game.scale.width / 2 - MAP_BORDER_SIZE));
+        }
+        if (this.game.scale.height >= this.height) {
+            this.cameraPosition.y = this.height / 2;
+        } else {
+            mouseUp = this.game.input.y < SCROLL_BORDER_SIZE;
+            mouseDown = this.game.input.y > this.game.scale.height - SCROLL_BORDER_SIZE;
+
+            if (this.cursors.up.isDown || mouseUp)
+                this.cameraPosition.y -= 10;
+            if (this.cursors.down.isDown || mouseDown)
+                this.cameraPosition.y += 10;
+
+            this.cameraPosition.clampY(
+                this.game.scale.height / 2 - MAP_BORDER_SIZE,
+                this.height - (this.game.scale.height / 2 - MAP_BORDER_SIZE));
+        }
+
+        // Actually move camera by adjusting world boundaries. (This actually
+        // leaves the camera static, but moves the world under the camera. This
+        // is necessary, because if you move the camera, you can't move it out
+        // of world bounds.)
+        this.game.world.setBounds(
+            this.cameraPosition.x - this.game.scale.width / 2,
+            this.cameraPosition.y - this.game.scale.height / 2,
+            this.cameraPosition.x + this.game.scale.width / 2,
+            this.cameraPosition.y + this.game.scale.height / 2);
+        this.cameraFocus.x = this.cameraPosition.x - this.cameraFocus.width / 2;
+        this.cameraFocus.y = this.cameraPosition.y - this.cameraFocus.height / 2;
 
         // Chance mouse icon if it's used for scrolling
         // TODO: only change css style if changed from last from as potential performance boost.
@@ -57,22 +97,6 @@ export default class Map {
         } else {
             this.canvas.style.cursor = 'auto';
         }
-
-        // Clamp camera position to game world
-        this.cameraPosition.clampX(0, this.width);
-        this.cameraPosition.clampY(0, this.height);
-
-        // Move camera by adjusting world boundaries. (This actually leaves the
-        // camera static, but moves the world under the camera. This is
-        // necessary, because if you move the camera, you can't move it out of
-        // world bounds.)
-        this.game.world.setBounds(
-            this.cameraPosition.x - this.game.scale.width / 2,
-            this.cameraPosition.y - this.game.scale.height / 2,
-            this.cameraPosition.x + this.game.scale.width / 2,
-            this.cameraPosition.y + this.game.scale.height / 2);
-        this.cameraFocus.x = this.cameraPosition.x - this.cameraFocus.width / 2;
-        this.cameraFocus.y = this.cameraPosition.y - this.cameraFocus.height / 2;
     }
 
     handleResize() {
