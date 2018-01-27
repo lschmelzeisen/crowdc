@@ -52,11 +52,11 @@ class Crowdc {
 
         this.addInputListeners();
 
-        // Spawn 10 guys immediately
+        // Spawn 11 guys immediately
         for (let _ of Array(10).keys()) {
-            this.addSprite(Human)
+            this.addSprite(Human, this.map)
         }
-        this.addSprite(Human, 'orb-red')
+        this.addSprite(Human, this.map, 'orb-red')
     }
 
     update() {
@@ -101,22 +101,22 @@ class Crowdc {
 
     addInputListeners() {
         this.game.input.onDown.add(() => {
-            this.addSprite(Human)
+            this.addSprite(Human, this.map)
         }, this);
 
         let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
         b_key.onDown.add(() => {
-            this.addSprite(Human, 'orb-blue')
+            this.addSprite(Human, this.map, 'orb-blue')
         });
 
         let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
         r_key.onDown.add(() => {
-            this.addSprite(Human, 'orb-red')
+            this.addSprite(Human, this.map, 'orb-red')
         });
 
         let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
         g_key.onDown.add(() => {
-            this.addSprite(Human, 'orb-green')
+            this.addSprite(Human, this.map, 'orb-green')
         })
     }
 }
