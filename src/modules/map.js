@@ -185,4 +185,10 @@ export default class Map {
             (this.height + MAP_BORDER_SIZE) * this.zoomFactor - this.game.height);
         this.cameraNeedsUpdate = true;
     }
+
+    calcCameraCoords(point) {
+        point.x = (point.x + this.cameraPosition.x) / this.zoomFactor;
+        point.y = (point.y + this.cameraPosition.y) / this.zoomFactor;
+        return point
+    }
 }
