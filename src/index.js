@@ -4,7 +4,7 @@ require('phaser');
 
 import './style.css';
 import Arrow from './assets/sprites/arrow.png';
-import TreasureTrap from './assets/sprites/treasure_trap.png';
+import OrbBlue from './assets/custom/orb-blue.png';
 import Human from './modules/human.js';
 
 class Crowdc {
@@ -49,7 +49,7 @@ class Crowdc {
     }
 
     loadAssets() {
-        this.game.load.image('trap', TreasureTrap);
+        this.game.load.image('orb-blue', OrbBlue);
         this.game.load.image('arrow', Arrow);
     }
 }
