@@ -1,7 +1,7 @@
 export default class Walls {
     constructor(state) {
         this.state = state;
-        this.walls = this.state.game.add.group();
+        this.walls = this.state.game.add.spriteBatch();
         state.map.group.add(this.walls);
 
         state.game.input.onDown.add(() => this.buildWall());
