@@ -13,11 +13,7 @@ export default class Human {
         this.sprite.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.inputEnabled = true
-        this.sprite.events.onInputDown.add(() => {
-            if (this.targetSprite)
-                this.targetSprite.destroy();
-            this.sprite.destroy();
-        }, this);
+        this.sprite.events.onInputDown.add(() => this.destroy(), this);
 
 
         this.moveToTarget();
@@ -52,4 +48,11 @@ export default class Human {
             }
         }
     }
+
+    destroy() {
+        if (this.targetSprite)
+            this.targetSprite.destroy();
+        this.sprite.destroy();
+    }
+
 }
