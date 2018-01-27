@@ -6,8 +6,8 @@ export default class Grid {
 
         for (var i = 0; i <= state.map.width / 32; i++)
             for (var j = 0; j <= state.map.height / 32; j++) {
-                this.graphics.beginFill(0xFF0000, 1);
-                this.graphics.drawCircle(i*32, j*32, 10);
+                this.graphics.beginFill(0x000000, 1);
+                this.graphics.drawCircle(i*32, j*32, 3);
             }
     }
 
