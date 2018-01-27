@@ -9,6 +9,7 @@ import Human from './modules/human.js';
 
 class Crowdc {
     constructor() {
+        this.spriteCount = 0
         this.game = new Phaser.Game(
             window.innerWidth,
             window.innerHeight,
@@ -36,8 +37,13 @@ class Crowdc {
         this.sprite.body.allowRotation = false;
 
         this.game.input.onDown.add(() => {
-            new Human(this.game)
+            this.addSprite(Human)
         }, this)
+
+        // Spawn 10 guys immediately
+        for (let _ of Array(10).keys()) {
+            this.addSprite(Human)
+        }
     }
 
     update() {
@@ -45,12 +51,24 @@ class Crowdc {
     }
 
     render() {
+        let x = 32;
+        let y = 96;
+        let yi = 16;
+        this.game.time.advancedTiming = true // enable fps logging
+
         this.game.debug.spriteInfo(this.sprite, 32, 32);
+        this.game.debug.text('Sprite count: ' + this.spriteCount, x, y += yi, '#fff', 'sans 10px');
+        this.game.debug.text(`FPS (now/min/max): ${this.game.time.fps}/${this.game.time.fpsMin}/${this.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
     }
 
     loadAssets() {
         this.game.load.image('orb-blue', OrbBlue);
         this.game.load.image('arrow', Arrow);
+    }
+
+    addSprite(spriteClassName) {
+        this.spriteCount++;
+        new spriteClassName(this.game)
     }
 }
 
