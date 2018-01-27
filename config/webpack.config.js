@@ -1,52 +1,60 @@
 const path = require('path');
-const phaserModulePath = path.join(__dirname, '../node_modules/phaser/');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+// Phaser webpack config
+const phaserModule = path.join(__dirname, '../node_modules/phaser-ce/');
+const phaser = path.join(phaserModule, 'build/custom/phaser-split.js');
+const pixi = path.join(phaserModule, 'build/custom/pixi.js');
+const p2 = path.join(phaserModule, 'build/custom/p2.js');
 
 module.exports = {
     entry: './src/index.js',
     devServer: {
         contentBase: './dist'
-    }, plugins: [
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js'
+    },
+    plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: './src/index.html',
-        }),
-    ], module: {
-        loaders: [
-            {
-                test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ]
-            },
+        })
+    ],
+    module: {
+        rules: [
+            // JS
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
+                use: ['babel-loader'],
+                include: path.join(__dirname, 'src')
             },
-            {test: /pixi\.js/, loader: 'expose-loader?PIXI'},
-            {test: /phaser-split\.js$/, loader: 'expose-loader?Phaser'},
-            {test: /p2\.js/, loader: 'expose-loader?p2'},
+            {test: /pixi\.js/, use: ['expose-loader?PIXI']},
+            {test: /phaser-split\.js$/, use: ['expose-loader?Phaser']},
+            {test: /p2\.js/, use: ['expose-loader?p2']},
+
+            // CSS
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+
+            // Images
             {
                 test: /\.(png|svg|jpg|gif)$/,
                 use: [
                     'file-loader'
                 ]
-            }
-        ],
-
-    }, output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, '../dist')
+            },
+        ]
     },
     resolve: {
         alias: {
-            'phaser': path.join(phaserModulePath, 'build/custom/phaser-split.js'),
-            'pixi': path.join(phaserModulePath, 'build/custom/pixi.js'),
-            'p2': path.join(phaserModulePath, 'build/custom/p2.js')
-
+            'phaser': phaser,
+            'pixi': pixi,
+            'p2': p2
         }
     }
-};
-
+}

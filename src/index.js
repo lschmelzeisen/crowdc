@@ -1,6 +1,6 @@
-require('pixi');
-require('p2');
-require('phaser');
+import 'pixi';
+import 'p2';
+import Phaser from 'phaser';
 
 import './style.css';
 
