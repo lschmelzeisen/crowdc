@@ -23,51 +23,65 @@ class Crowdc {
             window.innerWidth,
             window.innerHeight,
             Phaser.AUTO,
-            'game',
-            this);
+            'game', {
+                preload: () => this.preload(this),
+                create: () => this.create(this),
+                render: () => this.render(this),
+                update: () => this.update(this)
+            });
     }
 
-    preload() {
-        this.loadAssets()
+    /**
+     * StateManager Methods
+     * this is an instance of Phaser.StateManager
+     */
+
+    preload(crowdc) {
+        crowdc.loadAssets()
     }
 
-    create() {
+    create(crowdc) {
         window.addEventListener('resize', () => {
-            this.resize()
+            crowdc.resize()
         });
 
-        this.game.time.advancedTiming = true; // enable fps logging
+        crowdc.game.time.advancedTiming = true; // enable fps logging
 
-        this.map = new Map(this.game, 512, 512);
+        crowdc.map = new Map(this.game, 512, 512);
 
-        this.game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.game.stage.backgroundColor = '#161616';
+        crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
+        crowdc.game.stage.backgroundColor = '#161616';
 
-        this.addInputListeners();
+        crowdc.addInputListeners();
 
         // Spawn 11 guys immediately
         for (let _ of Array(10).keys()) {
-            this.addSprite(Human, this.map)
+            crowdc.addSprite(Human, this.map)
         }
-        this.addSprite(Human, this.map, 'orb-red')
+        crowdc.addSprite(Human, this.map, 'orb-red')
     }
 
-    update() {
-        this.map.handleScrolling();
+    update(crowdc) {
+        crowdc.map.handleScrolling();
     }
 
-    render() {
+    render(crowdc) {
         let x = 32;
         let y = 32;
         let yi = 16;
 
-        this.game.debug.text(`FPS (now/min/max): ${this.game.time.fps}/${this.game.time.fpsMin}/${this.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
+        this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
 
-        this.game.debug.text('Sprite count: ' + this.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        this.game.debug.text('Sprite count: ' + crowdc.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
 
         this.game.debug.inputInfo(x, y += 2 * yi);
-        this.game.debug.cameraInfo(this.game.camera, x, y += 6 * yi);
+        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
+
+    /**
+     * Actual crowdc methods
+     * this is an instance of Crowdc
+     */
 
     resize() {
         this.game.scale.setGameSize(window.innerWidth, window.innerHeight);
@@ -91,19 +105,13 @@ class Crowdc {
 
     addInputListeners() {
         let b_key = this.game.input.keyboard.addKey(Phaser.Keyboard.B);
-        b_key.onDown.add(() => {
-            this.addSprite(Human, this.map, 'orb-blue')
-        });
+        b_key.onDown.add(() => this.addSprite(Human, this.map, 'orb-blue'));
 
         let r_key = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
-        r_key.onDown.add(() => {
-            this.addSprite(Human, this.map, 'orb-red')
-        });
+        r_key.onDown.add(() => this.addSprite(Human, this.map, 'orb-red'));
 
         let g_key = this.game.input.keyboard.addKey(Phaser.Keyboard.G);
-        g_key.onDown.add(() => {
-            this.addSprite(Human, this.map, 'orb-green')
-        })
+        g_key.onDown.add(() => this.addSprite(Human, this.map, 'orb-green'))
     }
 }
 
