@@ -1,21 +1,28 @@
 import {getRandomGridPoint} from '../helpers/index'
 import {HUMAN_HEALTH} from '../consts'
 
+
 export class Human {
+
     constructor(state, health) {
         this.state = state;
-        this.image = 'orb-blue';
 
+        if (!Human.group)
+            Human.group = this.state.game.add.spriteBatch();
+
+        this.image = 'orb-blue';
         this.origin = getRandomGridPoint(this.state.map.width, this.state.map.height);
 
-        this.sprite = this.state.game.add.sprite(this.origin.x, this.origin.y, this.image);
+
+        // this.sprite = this.state.game.add.sprite(this.origin.x, this.origin.y, this.image);
+        this.sprite = Human.group.create(this.origin.x, this.origin.y, this.image);
         this.sprite.anchor.setTo(0.5, 0.5);
         this.state.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-        this.sprite.inputEnabled = true
+        this.sprite.inputEnabled = true;
         this.sprite.events.onInputDown.add(() => this.destroy(), this);
 
         this.moveToTarget();
-        this.sprite.update = () => this.update()
+        this.sprite.update = () => this.update();
         this.setHealth(health)
     }
 

@@ -16,6 +16,8 @@ import Particle from './assets/misc/particle_smallest.png';
 import Map from './modules/map.js';
 import {HealthyHumanFactory, InfectedHumanFactory, SickHumanFactory} from './modules/human.js';
 import State from './modules/state.js';
+import {getRandomGridPoint} from './helpers/index'
+
 
 class Crowdc {
     constructor() {
