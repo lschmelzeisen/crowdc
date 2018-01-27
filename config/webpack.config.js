@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // Phaser webpack config
@@ -14,7 +13,7 @@ module.exports = {
         contentBase: './dist'
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '../dist'),
         filename: 'bundle.js'
     },
     plugins: [
