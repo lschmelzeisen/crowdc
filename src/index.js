@@ -71,7 +71,6 @@ class Crowdc {
 
     resize() {
         this.game.scale.setGameSize(window.innerWidth, window.innerHeight);
-        console.log(this.game.world.width, this.game.world.height);
         this.map.handleResize();
     }
 
