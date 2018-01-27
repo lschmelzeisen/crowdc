@@ -10,19 +10,36 @@ export default class Map {
 
         this.cursors = game.input.keyboard.createCursorKeys();
 
-        this.game.world.resize(this.width, this.height);
+        // Set world size to be bigger than the window so camera can be moved
+        // TODO: find out how these parameters have to be set in relation to window size
+        this.game.world.setBounds(-5000, -5000, 10000, 10000);
+        // Move camera half the size of the viewport back so the pivot point is in the center of our view
+        this.game.camera.x = -game.width / 2;
+        this.game.camera.y = -game.height / 2;
 
-        // Map Border
+        // Initialize camera position in center of world
+        this.cameraPosition = new Phaser.Point(this.width / 2, this.height / 2);
+
+        // Mouse cursor style tracker
+        this.mouseCursorStyle = 'auto';
+
+        // Zoom setup
+        this.zoomFactor = 1.0;
+        this.canvas.addEventListener('wheel', (event) => {
+            this.zoomFactor += -event.deltaY / 200;
+            this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, 0.2, 5);
+            this.game.world.scale.set(this.zoomFactor);
+            console.log(this.zoomFactor);
+        });
+
+        // Map border
         this.mapBorder = this.game.add.graphics(0, 0);
         this.mapBorder.beginFill(0x333333);
         this.mapBorder.drawRect(-MAP_BORDER_SIZE, -MAP_BORDER_SIZE, this.width + 2 * MAP_BORDER_SIZE, this.height + 2 * MAP_BORDER_SIZE);
-        // Map Sprite
+        // Map sprite
         this.sprite = this.game.add.tileSprite(0, 0, this.width, this.height, 'grass');
-
-        // Camera setup
-        this.cameraPosition = new Phaser.Point(this.width / 2, this.height / 2);
-        this.cameraFocus = this.game.add.sprite(100, 100, 'particle');
-        this.game.camera.follow(this.cameraFocus);
+        // Camera indicator sprite
+        this.cameraIndicator = this.game.add.sprite(100, 100, 'particle');
     }
 
     handleScrolling() {
@@ -33,72 +50,68 @@ export default class Map {
         let mouseDown = false;
 
         // Change logical camera position
-        if (this.game.scale.width >= this.width) {
+        if (this.game.scale.width / this.zoomFactor >= this.width) {
             this.cameraPosition.x = this.width / 2;
         } else {
             mouseLeft = this.game.input.x < SCROLL_BORDER_SIZE;
             mouseRight = this.game.input.x > this.game.scale.width - SCROLL_BORDER_SIZE;
 
             if (this.cursors.left.isDown || mouseLeft)
-                this.cameraPosition.x -= 10;
+                this.cameraPosition.x -= 10 / this.zoomFactor;
             if (this.cursors.right.isDown || mouseRight)
-                this.cameraPosition.x += 10;
+                this.cameraPosition.x += 10 / this.zoomFactor;
 
-            this.cameraPosition.clampX(
-                this.game.scale.width / 2 - MAP_BORDER_SIZE,
-                this.width - (this.game.scale.width / 2 - MAP_BORDER_SIZE));
+            const unscrollableAreaSize = this.game.scale.width / 2 / this.zoomFactor - MAP_BORDER_SIZE;
+            this.cameraPosition.clampX(unscrollableAreaSize, this.width - unscrollableAreaSize);
         }
-        if (this.game.scale.height >= this.height) {
+        if (this.game.scale.height / this.zoomFactor >= this.height) {
             this.cameraPosition.y = this.height / 2;
         } else {
             mouseUp = this.game.input.y < SCROLL_BORDER_SIZE;
             mouseDown = this.game.input.y > this.game.scale.height - SCROLL_BORDER_SIZE;
 
             if (this.cursors.up.isDown || mouseUp)
-                this.cameraPosition.y -= 10;
+                this.cameraPosition.y -= 10 / this.zoomFactor;
             if (this.cursors.down.isDown || mouseDown)
-                this.cameraPosition.y += 10;
+                this.cameraPosition.y += 10 / this.zoomFactor;
 
-            this.cameraPosition.clampY(
-                this.game.scale.height / 2 - MAP_BORDER_SIZE,
-                this.height - (this.game.scale.height / 2 - MAP_BORDER_SIZE));
+            const unscrollableAreaSize = this.game.scale.height / 2 / this.zoomFactor - MAP_BORDER_SIZE;
+            this.cameraPosition.clampY(unscrollableAreaSize, this.height - unscrollableAreaSize);
         }
 
-        // Actually move camera by adjusting world boundaries. (This actually
-        // leaves the camera static, but moves the world under the camera. This
-        // is necessary, because if you move the camera, you can't move it out
-        // of world bounds.)
-        this.game.world.setBounds(
-            this.cameraPosition.x - this.game.scale.width / 2,
-            this.cameraPosition.y - this.game.scale.height / 2,
-            this.cameraPosition.x + this.game.scale.width / 2,
-            this.cameraPosition.y + this.game.scale.height / 2);
-        this.cameraFocus.x = this.cameraPosition.x - this.cameraFocus.width / 2;
-        this.cameraFocus.y = this.cameraPosition.y - this.cameraFocus.height / 2;
+        this.game.world.pivot = this.cameraPosition;
 
-        // Chance mouse icon if it's used for scrolling
-        // TODO: only change css style if changed from last from as potential performance boost.
+        this.cameraIndicator.x = this.cameraPosition.x - this.cameraIndicator.width / 2;
+        this.cameraIndicator.y = this.cameraPosition.y - this.cameraIndicator.height / 2;
+
+        // Change mouse icon if it's used for scrolling
+        let oldMouseCursorStyle = this.mouseCursorStyle;
         if (mouseUp) {
-            this.canvas.style.cursor = 'n-resize';
+            this.mouseCursorStyle = 'n-resize';
             if (mouseLeft)
-                this.canvas.style.cursor = 'nw-resize';
+                this.mouseCursorStyle = 'nw-resize';
             else if (mouseRight)
-                this.canvas.style.cursor = 'ne-resize';
+                this.mouseCursorStyle = 'ne-resize';
         } else if (mouseDown) {
-            this.canvas.style.cursor = 's-resize';
+            this.mouseCursorStyle = 's-resize';
             if (mouseLeft)
-                this.canvas.style.cursor = 'sw-resize';
+                this.mouseCursorStyle = 'sw-resize';
             else if (mouseRight)
-                this.canvas.style.cursor = 'se-resize';
+                this.mouseCursorStyle = 'se-resize';
         } else if (mouseLeft) {
-            this.canvas.style.cursor = 'w-resize';
+            this.mouseCursorStyle = 'w-resize';
         } else if (mouseRight) {
-            this.canvas.style.cursor = 'e-resize';
+            this.mouseCursorStyle = 'e-resize';
         } else {
-            this.canvas.style.cursor = 'auto';
+            this.mouseCursorStyle = 'auto';
+        }
+        if (this.mouseCursorStyle != oldMouseCursorStyle) {
+            this.canvas.style.cursor = this.mouseCursorStyle;
         }
     }
 
     handleResize() {
+        this.game.camera.x = -this.game.width / 2;
+        this.game.camera.y = -this.game.height / 2;
     }
 }
