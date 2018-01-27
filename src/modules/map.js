@@ -29,7 +29,6 @@ export default class Map {
             this.zoomFactor += -event.deltaY / 200;
             this.zoomFactor = Phaser.Math.clamp(this.zoomFactor, 0.2, 5);
             this.game.world.scale.set(this.zoomFactor);
-            console.log(this.zoomFactor);
         });
 
         // Map border

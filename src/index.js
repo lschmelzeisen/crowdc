@@ -34,7 +34,7 @@ class Crowdc {
 
     /**
      * StateManager Methods
-     * this is an instance of Phaser.StateManager
+     * `this` in the following methods is an instance of Phaser.StateManager.
      */
 
     preload(crowdc) {
@@ -78,8 +78,8 @@ class Crowdc {
     }
 
     /**
-     * Actual crowdc methods
-     * this is an instance of Crowdc
+     * "Normal" crowdc methods
+     * `this` in the following methods is an instance of Crowdc.
      */
 
     resize() {
