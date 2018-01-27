@@ -23,13 +23,6 @@ export class Human {
     moveToTarget() {
         this.target = getRandomGridPoint(this.state.map.width, this.state.map.height);
 
-        if (this.targetSprite)
-            this.targetSprite.destroy();
-        this.targetSprite = this.state.game.add.sprite(this.target.x, this.target.y, 'orb-red');
-        this.state.map.group.add(this.targetSprite);
-        this.targetSprite.anchor.setTo(0.5, 0.5);
-        this.targetSprite.scale.setTo(0.5, 0.5);
-
         const SPEED = 150; // px/s
         let distance = this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
         let duration = (distance / SPEED) * 1000;
