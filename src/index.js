@@ -56,10 +56,7 @@ class Crowdc {
 
         crowdc.addInputListeners();
 
-        // Spawn 11 guys immediately
-        for (let _ of Array(10).keys()) {
-            crowdc.state.addSprite(Human);
-        }
+        // Spawn 1 red guy immediately
         crowdc.state.addSprite(Human, 'orb-red');
     }
 
