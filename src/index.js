@@ -1,7 +1,15 @@
 import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
+import Map from './modules/map.js';
+import {
+    HealthyHumanFactory,
+    InfectedHumanFactory,
+    SickHumanFactory
+} from './modules/human.js';
+import State from './modules/state.js';
 
+// CSS
 import './style.css';
 
 // Assets
@@ -12,18 +20,7 @@ import Grass from './assets/tests/grass1.png';
 import Harrier from './assets/tests/harrier3.png';
 import Particle from './assets/misc/particle_smallest.png';
 import Wall from './assets/tilemaps/tiles/gridtiles.png';
-
-// JS
-import Map from './modules/map.js';
-
-
-import {
-    HealthyHumanFactory,
-    InfectedHumanFactory,
-    SickHumanFactory
-} from './modules/human.js';
-import State from './modules/state.js';
-
+import Kaboom from './assets/games/invaders/explode.png';
 
 class Crowdc {
     constructor() {
@@ -101,6 +98,7 @@ class Crowdc {
         this.game.load.image('harrier', Harrier);
         this.game.load.image('particle', Particle);
         this.game.load.spritesheet('wall', Wall, 32, 32);
+        this.game.load.spritesheet('kaboom', Kaboom, 128, 128);
     }
 
     addInputListeners() {

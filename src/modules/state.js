@@ -1,5 +1,6 @@
 import Walls from "./walls";
 import Grid from "./grid";
+import Explosions from "./explosions";
 
 export default class State {
     constructor(game) {
@@ -13,6 +14,7 @@ export default class State {
 
         this.grid = new Grid(this);
         this.walls = new Walls(this);
+        this.explosions = new Explosions(this);
 
         this.healthyGroup = this.game.add.spriteBatch(null, 'healthy');
         this.map.group.add(this.healthyGroup);
