@@ -1,17 +1,25 @@
 import 'pixi';
 import 'p2';
 import Phaser from 'phaser';
+import Map from './modules/map.js';
+import {
+    HealthyHumanFactory,
+    InfectedHumanFactory,
+    SickHumanFactory
+} from './modules/human.js';
+import State from './modules/state.js';
 
+// CSS
 import './style.css';
 
 // Assets
 import OrbBlue from './assets/custom/orb-blue.png';
 import OrbRed from './assets/custom/orb-red.png';
 import OrbGreen from './assets/custom/orb-green.png';
-import Grass from './assets/tests/grass1.png';
-import Harrier from './assets/tests/harrier3.png';
-import Particle from './assets/misc/particle_smallest.png';
-import Wall from './assets/tilemaps/tiles/gridtiles.png';
+import Grass from './assets/custom/grass.png';
+import Wall from './assets/custom/wall.png';
+import Kaboom from './assets/custom/explosion.png';
+import {CLICK_MODES} from './consts'
 
 // JS
 import Map from './modules/map.js';
@@ -27,7 +35,6 @@ import {getRandomGridPoint} from './helpers/index'
 
 class Crowdc {
     constructor() {
-        this.state = new State();
         this.game = new Phaser.Game(
             window.innerWidth,
             window.innerHeight,
@@ -38,6 +45,7 @@ class Crowdc {
                 render: () => this.render(this),
                 update: () => this.update(this)
             });
+        this.state = new State(this.game);
     }
 
     /**
@@ -50,34 +58,24 @@ class Crowdc {
     }
 
     create(crowdc) {
-        window.addEventListener('resize', () => {
-            crowdc.resize();
-        });
+        window.addEventListener('resize', () => crowdc.resize());
 
         crowdc.game.time.advancedTiming = true; // enable fps logging
-
-        crowdc.state.game = this.game;
-        crowdc.state.map = new Map(this.game, 512, 512);
-        crowdc.state.setup();
-
-        crowdc.state.grid = new Grid(crowdc.state);
-        crowdc.state.walls = new Walls(crowdc.state);
 
         crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
         crowdc.game.stage.backgroundColor = '#161616';
 
         crowdc.addInputListeners();
 
-
-
+        let map = new Map(this.game, 512, 512);
+        crowdc.state.create(map);
 
         // Spawn 1 red guy immediately
         crowdc.state.addSprite(SickHumanFactory);
     }
 
     update(crowdc) {
-        crowdc.state.map.handleScrolling();
-        crowdc.state.walls.update();
+        crowdc.state.update();
     }
 
     render(crowdc) {
@@ -87,10 +85,17 @@ class Crowdc {
 
         this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
 
-        this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        this.game.debug.text('Click mode: ' + crowdc.state.clickMode + ' (switch with k/w)', x, y += 2 * yi, '#fff', 'sans 10px');
 
         this.game.debug.inputInfo(x, y += 2 * yi);
-        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
+        let pos = this.state.map.calcCameraCoords(new Phaser.Point(
+            this.state.game.input.activePointer.worldX,
+            this.state.game.input.activePointer.worldY));
+        this.game.debug.text(pos, x, y += 6 * yi);
+        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 2 * yi);
+        //this.game.debug.inputInfo(x, y += 2 * yi);
+        //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
 
     /**
@@ -108,9 +113,8 @@ class Crowdc {
         this.game.load.image('orb-red', OrbRed);
         this.game.load.image('orb-green', OrbGreen);
         this.game.load.image('grass', Grass);
-        this.game.load.image('harrier', Harrier);
-        this.game.load.image('particle', Particle);
-        this.game.load.spritesheet('wall',Wall,32,32);
+        this.game.load.spritesheet('wall', Wall);
+        this.game.load.spritesheet('kaboom', Kaboom, 128, 128);
     }
 
     addInputListeners() {

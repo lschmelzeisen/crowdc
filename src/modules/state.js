@@ -1,18 +1,36 @@
+import Walls from "./walls";
+import Grid from "./grid";
+import Explosions from "./explosions";
+import {CLICK_MODES} from '../consts';
+
 export default class State {
-    constructor(game, map) {
+    constructor(game) {
         this.spriteCount = 0;
         this.sprites = [];
         this.game = game;
-        this.map = map;
+        this.clickMode = CLICK_MODES.KILL;
     }
 
-    setup() {
+    create(map) {
+        this.map = map;
+
+        this.grid = new Grid(this);
+        this.walls = new Walls(this);
+
+        this.humanGroup = this.game.add.group(this.map.group);
         this.healthyGroup = this.game.add.spriteBatch(null, 'healthy');
         this.map.group.add(this.healthyGroup);
         this.infectedGroup = this.game.add.spriteBatch(null, 'infected');
         this.map.group.add(this.infectedGroup);
         this.sickGroup = this.game.add.spriteBatch(null, 'sick');
         this.map.group.add(this.sickGroup);
+
+        this.explosions = new Explosions(this);
+    }
+
+    update() {
+        this.map.handleScrolling();
+        this.walls.update();
     }
 
     addSprite(spriteClassName) {
@@ -32,7 +50,7 @@ export default class State {
         }
     }
 
-    resetSprites () {
+    resetSprites() {
         this.healthyGroup.removeAll(true)
         this.infectedGroup.removeAll(true)
         this.sickGroup.removeAll(true)
