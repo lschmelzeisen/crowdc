@@ -16,11 +16,9 @@ import './style.css';
 import OrbBlue from './assets/custom/orb-blue.png';
 import OrbRed from './assets/custom/orb-red.png';
 import OrbGreen from './assets/custom/orb-green.png';
-import Grass from './assets/tests/grass1.png';
-import Harrier from './assets/tests/harrier3.png';
-import Particle from './assets/misc/particle_smallest.png';
-import Wall from './assets/tilemaps/tiles/gridtiles.png';
-import Kaboom from './assets/games/invaders/explode.png';
+import Grass from './assets/custom/grass.png';
+import Wall from './assets/custom/wall.png';
+import Kaboom from './assets/custom/explosion.png';
 import {CLICK_MODES} from './consts'
 
 class Crowdc {
@@ -97,9 +95,7 @@ class Crowdc {
         this.game.load.image('orb-red', OrbRed);
         this.game.load.image('orb-green', OrbGreen);
         this.game.load.image('grass', Grass);
-        this.game.load.image('harrier', Harrier);
-        this.game.load.image('particle', Particle);
-        this.game.load.spritesheet('wall', Wall, 32, 32);
+        this.game.load.spritesheet('wall', Wall);
         this.game.load.spritesheet('kaboom', Kaboom, 128, 128);
     }
 
