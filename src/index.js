@@ -75,11 +75,11 @@ class Crowdc {
 
         this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
 
-        this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
-        this.game.debug.text('Click mode: ' + crowdc.state.clickMode, x, y += 2 * yi, '#fff', 'sans 10px');
+        // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        this.game.debug.text('Click mode: ' + crowdc.state.clickMode + ' (switch with k/w)', x, y += 2 * yi, '#fff', 'sans 10px');
 
-        this.game.debug.inputInfo(x, y += 2 * yi);
-        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
+        //this.game.debug.inputInfo(x, y += 2 * yi);
+        //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
 
     /**
