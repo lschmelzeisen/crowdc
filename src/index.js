@@ -50,13 +50,13 @@ class Crowdc {
 
         crowdc.game.time.advancedTiming = true; // enable fps logging
 
-        let map = new Map(this.game, 512, 512);
-        crowdc.state.create(map);
-
         crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
         crowdc.game.stage.backgroundColor = '#161616';
 
         crowdc.addInputListeners();
+
+        let map = new Map(this.game, 512, 512);
+        crowdc.state.create(map);
 
         // Spawn 1 red guy immediately
         crowdc.state.addSprite(SickHumanFactory);
@@ -76,6 +76,12 @@ class Crowdc {
         // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
         this.game.debug.text('Click mode: ' + crowdc.state.clickMode + ' (switch with k/w)', x, y += 2 * yi, '#fff', 'sans 10px');
 
+        this.game.debug.inputInfo(x, y += 2 * yi);
+        let pos = this.state.map.calcCameraCoords(new Phaser.Point(
+            this.state.game.input.activePointer.worldX,
+            this.state.game.input.activePointer.worldY));
+        this.game.debug.text(pos, x, y += 6 * yi);
+        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 2 * yi);
         //this.game.debug.inputInfo(x, y += 2 * yi);
         //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
@@ -110,9 +116,7 @@ class Crowdc {
         g_key.onDown.add(() => this.state.addSprite(HealthyHumanFactory));
 
         let x_key = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
-        x_key.onDown.add(() => {
-            this.state.resetSprites()
-        });
+        x_key.onDown.add(() => this.state.resetSprites());
 
         let k_key = this.game.input.keyboard.addKey(Phaser.Keyboard.K);
         k_key.onDown.add(() => this.state.clickMode = CLICK_MODES.KILL);

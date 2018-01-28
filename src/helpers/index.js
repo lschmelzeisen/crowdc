@@ -15,3 +15,24 @@ export function drawPlus(graphics, x, y, size) {
     graphics.moveTo(x, y - size);
     graphics.lineTo(x, y + size);
 }
+
+
+export function getObjectsCollidingBounds(game, bounds, group, callback) {
+    let quadtree = new Phaser.QuadTree(
+        game.world.bounds.x,
+        game.world.bounds.y,
+        game.world.bounds.width,
+        game.world.bounds.height,
+        10,
+        4);
+
+    quadtree.populate(group);
+
+    let items = quadtree.retrieve(bounds);
+
+    for (let item of items) {
+        let itemBounds = item.sprite.getBounds();
+        if (Phaser.Rectangle.intersects(bounds, itemBounds))
+            callback(item);
+    }
+}

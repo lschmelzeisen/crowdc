@@ -1,6 +1,5 @@
-import {getRandomGridPoint} from '../helpers/index'
+import {getRandomGridPoint, getObjectsCollidingBounds} from '../helpers/index'
 import {CLICK_MODES, HUMAN_HEALTH} from '../consts'
-
 
 export class Human {
 
@@ -11,9 +10,8 @@ export class Human {
 
         this.sprite = this.state.game.add.sprite(this.origin.x, this.origin.y, 'orb-red');
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.human = this;
         this.state.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-        this.sprite.inputEnabled = true;
-        this.sprite.events.onInputDown.add(() => this.destroyWithClick(), this);
 
         this.moveToTarget();
         this.sprite.update = () => this.update();
@@ -32,11 +30,9 @@ export class Human {
 
     update() {
         if (this.target) {
-            if (this.isHealthy()) {
-                this.betterGetObjectsAtLocation(this.state.sickGroup, () => {
-                    this.infect()
-                })
-            }
+            if (this.isHealthy())
+                getObjectsCollidingBounds(this.state.game, this.sprite.getBounds(),
+                    this.state.sickGroup, () => this.infect());
 
             if (this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) < 3) {
                 this.sprite.body.velocity.setTo(0, 0);
@@ -79,7 +75,7 @@ export class Human {
         this.state.sickGroup.remove(this.sprite);
         this.health = HUMAN_HEALTH.HEALTHY;
         this.state.healthyGroup.add(this.sprite);
-        this.sprite.loadTexture('orb-green')
+        this.sprite.loadTexture('orb-green');
     }
 
     infect() {
@@ -87,7 +83,7 @@ export class Human {
         this.state.healthyGroup.remove(this.sprite);
         this.sprite.loadTexture('orb-blue');
         this.state.infectedGroup.add(this.sprite);
-        this.makeSickTimer = setTimeout(() => this.makeSick(), 5000)
+        this.makeSickTimer = setTimeout(() => this.makeSick(), 5000);
     }
 
     makeSick() {
@@ -110,39 +106,22 @@ export class Human {
     }
 
 
-    betterGetObjectsAtLocation(group, callback) {
-        let quadtree = new Phaser.QuadTree(this.state.game.world.bounds.x,
-            this.state.game.world.bounds.y,
-            this.state.game.world.bounds.width,
-            this.state.game.world.bounds.height, 10, 4);
-
-        quadtree.populate(group);
-
-        let spriteBounds = this.sprite.getBounds();
-        let items = quadtree.retrieve(spriteBounds);
-
-        for (let item of items) {
-            let itemBounds = item.sprite.getBounds();
-            if (Phaser.Rectangle.intersects(spriteBounds, itemBounds))
-                callback.call()
-        }
-    }
 }
 
 export class HealthyHumanFactory extends Human {
     constructor(state) {
-        super(state, HUMAN_HEALTH.HEALTHY)
+        super(state, HUMAN_HEALTH.HEALTHY);
     }
 }
 
 export class InfectedHumanFactory extends Human {
     constructor(state) {
-        super(state, HUMAN_HEALTH.INFECTED)
+        super(state, HUMAN_HEALTH.INFECTED);
     }
 }
 
 export class SickHumanFactory extends Human {
     constructor(state) {
-        super(state, HUMAN_HEALTH.SICK)
+        super(state, HUMAN_HEALTH.SICK);
     }
 }

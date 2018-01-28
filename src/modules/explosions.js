@@ -1,12 +1,12 @@
-import {GRID_SIZE} from "./grid";
-import {CLICK_MODES} from "../consts"
+import {getObjectsCollidingBounds} from "../helpers";
+import {CLICK_MODES} from '../consts';
 
-const EXPLOSION_SIZE = 64;
+const EXPLOSION_SIZE = 32;
+const EXPLOSION_SCALE_FACTOR = EXPLOSION_SIZE / 32; // 128 is image size
 
 export default class Explosions {
     constructor(state) {
         this.state = state;
-        this.group = this.state.game.add.group(this.state.map.group);
 
         this.state.game.input.onTap.add(this.fire, this);
     }
@@ -22,13 +22,25 @@ export default class Explosions {
                 pos.clampX(EXPLOSION_SIZE / 2, this.state.map.width - EXPLOSION_SIZE / 2);
                 pos.clampY(EXPLOSION_SIZE / 2, this.state.map.height - EXPLOSION_SIZE / 2);
 
-                let sprite = this.state.game.add.sprite(pos.x, pos.y, 'kaboom', 0, this.group);
-                sprite.anchor.set(0.5, 0.5);
-                const SCALE_FACTOR = EXPLOSION_SIZE / 128; // 128 is image size
-                sprite.scale.set(SCALE_FACTOR, SCALE_FACTOR);
-                sprite.animations.add('boom');
-                sprite.play('boom', 30, false, true);
+                let explosion = this.state.game.add.sprite(pos.x, pos.y, 'kaboom', 0, this.state.map.group);
+                explosion.anchor.set(0.5, 0.5);
+                explosion.scale.set(EXPLOSION_SCALE_FACTOR, EXPLOSION_SCALE_FACTOR);
+                explosion.animations.add('boom');
+                explosion.play('boom', 30, false, true);
+
+                explosion.update = () => this.update(explosion);
             }
         }
+    }
+
+    update(explosion) {
+        let bounds = explosion.getBounds();
+
+        for (let group of [this.state.healthyGroup, this.state.infectedGroup, this.state.sickGroup]) {
+            getObjectsCollidingBounds(this.state.game, bounds,
+                group, (humanSprite) => humanSprite.sprite.human.destroyWithClick());
+        }
+
+        setTimeout(() => explosion.destroy(), 50);
     }
 }
