@@ -26,7 +26,6 @@ export default class Walls {
 
 
     buildWall() {
-        console.log(this.state.clickMode);
         if (this.state.clickMode === CLICK_MODES.WALL) {
             let pos = this.state.map.calcCameraCoords(new Phaser.Point(
                 this.state.game.input.activePointer.worldX,

@@ -82,20 +82,20 @@ class Crowdc {
         let x = 32;
         let y = 32;
         let yi = 16;
-
+        //
         this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
-
-        // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        //
+        // // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
         this.game.debug.text('Click mode: ' + crowdc.state.clickMode + ' (switch with k/w)', x, y += 2 * yi, '#fff', 'sans 10px');
-
-        this.game.debug.inputInfo(x, y += 2 * yi);
-        let pos = this.state.map.calcCameraCoords(new Phaser.Point(
-            this.state.game.input.activePointer.worldX,
-            this.state.game.input.activePointer.worldY));
-        this.game.debug.text(pos, x, y += 6 * yi);
-        this.game.debug.cameraInfo(crowdc.game.camera, x, y += 2 * yi);
-        //this.game.debug.inputInfo(x, y += 2 * yi);
-        //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
+        //
+        // this.game.debug.inputInfo(x, y += 2 * yi);
+        // let pos = this.state.map.calcCameraCoords(new Phaser.Point(
+        //     this.state.game.input.activePointer.worldX,
+        //     this.state.game.input.activePointer.worldY));
+        // this.game.debug.text(pos, x, y += 6 * yi);
+        // this.game.debug.cameraInfo(crowdc.game.camera, x, y += 2 * yi);
+        // //this.game.debug.inputInfo(x, y += 2 * yi);
+        // //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
 
     /**
@@ -148,6 +148,11 @@ class Crowdc {
                 this.state.addSprite(SickHumanFactory)
             }
         });
+
+        let k_key = this.game.input.keyboard.addKey(Phaser.Keyboard.K);
+        k_key.onDown.add(() => this.state.clickMode = CLICK_MODES.KILL);
+        let w_key = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        w_key.onDown.add(() => this.state.clickMode = CLICK_MODES.WALL);
     }
 }
 
