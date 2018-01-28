@@ -47,6 +47,8 @@ export class Human {
     }
 
     destroy() {
+        if (this.makeSickTimer)
+            clearTimeout(this.makeSickTimer);
         this.state.removeSprite(this);
     }
 
@@ -80,7 +82,7 @@ export class Human {
         this.state.healthyGroup.remove(this.sprite);
         this.sprite.loadTexture('orb-blue');
         this.state.infectedGroup.add(this.sprite);
-        setTimeout(() => this.makeSick(), 5000)
+        this.makeSickTimer = setTimeout(() => this.makeSick(), 5000)
     }
 
     makeSick() {
