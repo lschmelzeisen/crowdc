@@ -14,19 +14,22 @@ export default class State {
 
         this.grid = new Grid(this);
         this.walls = new Walls(this);
-        this.explosions = new Explosions(this);
 
+        this.humanGroup = this.game.add.group(this.map.group);
         this.healthyGroup = this.game.add.spriteBatch(null, 'healthy');
         this.map.group.add(this.healthyGroup);
         this.infectedGroup = this.game.add.spriteBatch(null, 'infected');
         this.map.group.add(this.infectedGroup);
         this.sickGroup = this.game.add.spriteBatch(null, 'sick');
         this.map.group.add(this.sickGroup);
+
+        this.explosions = new Explosions(this);
     }
 
     update() {
+        // this.explosions.update();
         this.map.handleScrolling();
-        this.walls.update();
+        // this.walls.update();
     }
 
     addSprite(spriteClassName) {

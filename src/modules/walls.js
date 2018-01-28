@@ -1,12 +1,13 @@
 import {GRID_SIZE} from "./grid";
 
+const WALL_SCALE_FACTOR = GRID_SIZE / 32; // 32 is image size
+
 export default class Walls {
     constructor(state) {
         this.state = state;
         this.walls = this.state.game.add.spriteBatch();
         state.map.group.add(this.walls);
 
-        // this.wallMatrix = Array(GRID_SIZE).fill(Array(GRID_SIZE).fill(false))
         this.wallMatrix = new Array(GRID_SIZE);
         for (let i = 0; i !== GRID_SIZE; ++i)
             this.wallMatrix[i] = Array(GRID_SIZE).fill(false);
@@ -30,8 +31,7 @@ export default class Walls {
                 this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE] = true;
 
                 let sprite = this.walls.create(pos.x, pos.y, 'wall', 0);
-                const SCALE_FACTOR = GRID_SIZE / 32; // 32 is image size
-                sprite.scale.set(SCALE_FACTOR, SCALE_FACTOR);
+                sprite.scale.set(WALL_SCALE_FACTOR, WALL_SCALE_FACTOR);
             }
         }
     }
