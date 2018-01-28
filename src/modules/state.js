@@ -1,18 +1,30 @@
+import Walls from "./walls";
+import Grid from "./grid";
+
 export default class State {
-    constructor(game, map) {
+    constructor(game) {
         this.spriteCount = 0;
         this.sprites = [];
         this.game = game;
-        this.map = map;
     }
 
-    setup() {
+    create(map) {
+        this.map = map;
+
+        this.grid = new Grid(this);
+        this.walls = new Walls(this);
+
         this.healthyGroup = this.game.add.spriteBatch(null, 'healthy');
         this.map.group.add(this.healthyGroup);
         this.infectedGroup = this.game.add.spriteBatch(null, 'infected');
         this.map.group.add(this.infectedGroup);
         this.sickGroup = this.game.add.spriteBatch(null, 'sick');
         this.map.group.add(this.sickGroup);
+    }
+
+    update() {
+        this.map.handleScrolling();
+        this.walls.update();
     }
 
     addSprite(spriteClassName) {
@@ -32,7 +44,7 @@ export default class State {
         }
     }
 
-    resetSprites () {
+    resetSprites() {
         this.healthyGroup.removeAll(true)
         this.infectedGroup.removeAll(true)
         this.sickGroup.removeAll(true)

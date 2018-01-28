@@ -15,18 +15,18 @@ import Wall from './assets/tilemaps/tiles/gridtiles.png';
 
 // JS
 import Map from './modules/map.js';
-import Grid from './modules/grid.js';
-import Walls from './modules/walls.js';
 
 
-import {HealthyHumanFactory, InfectedHumanFactory, SickHumanFactory} from './modules/human.js';
+import {
+    HealthyHumanFactory,
+    InfectedHumanFactory,
+    SickHumanFactory
+} from './modules/human.js';
 import State from './modules/state.js';
-import {getRandomGridPoint} from './helpers/index'
 
 
 class Crowdc {
     constructor() {
-        this.state = new State();
         this.game = new Phaser.Game(
             window.innerWidth,
             window.innerHeight,
@@ -37,6 +37,7 @@ class Crowdc {
                 render: () => this.render(this),
                 update: () => this.update(this)
             });
+        this.state = new State(this.game);
     }
 
     /**
@@ -49,18 +50,12 @@ class Crowdc {
     }
 
     create(crowdc) {
-        window.addEventListener('resize', () => {
-            crowdc.resize();
-        });
+        window.addEventListener('resize', () => crowdc.resize());
 
         crowdc.game.time.advancedTiming = true; // enable fps logging
 
-        crowdc.state.game = this.game;
-        crowdc.state.map = new Map(this.game, 512, 512);
-        crowdc.state.setup();
-
-        crowdc.state.grid = new Grid(crowdc.state);
-        crowdc.state.walls = new Walls(crowdc.state);
+        let map = new Map(this.game, 512, 512);
+        crowdc.state.create(map);
 
         crowdc.game.physics.startSystem(Phaser.Physics.ARCADE);
         crowdc.game.stage.backgroundColor = '#161616';
@@ -72,8 +67,7 @@ class Crowdc {
     }
 
     update(crowdc) {
-        crowdc.state.map.handleScrolling();
-        crowdc.state.walls.update();
+        crowdc.state.update();
     }
 
     render(crowdc) {
@@ -106,7 +100,7 @@ class Crowdc {
         this.game.load.image('grass', Grass);
         this.game.load.image('harrier', Harrier);
         this.game.load.image('particle', Particle);
-        this.game.load.spritesheet('wall',Wall,32,32);
+        this.game.load.spritesheet('wall', Wall, 32, 32);
     }
 
     addInputListeners() {
