@@ -1,5 +1,5 @@
 import {getRandomGridPoint} from '../helpers/index'
-import {HUMAN_HEALTH} from '../consts'
+import {CLICK_MODES, HUMAN_HEALTH} from '../consts'
 
 
 export class Human {
@@ -13,7 +13,7 @@ export class Human {
         this.sprite.anchor.setTo(0.5, 0.5);
         this.state.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
         this.sprite.inputEnabled = true;
-        this.sprite.events.onInputDown.add(() => this.destroy(), this);
+        this.sprite.events.onInputDown.add(() => this.destroyWithClick(), this);
 
         this.moveToTarget();
         this.sprite.update = () => this.update();
@@ -44,6 +44,11 @@ export class Human {
             }
         }
 
+    }
+
+    destroyWithClick() {
+        if (this.state.clickMode === CLICK_MODES.KILL)
+            this.destroy();
     }
 
     destroy() {

@@ -21,6 +21,7 @@ import Harrier from './assets/tests/harrier3.png';
 import Particle from './assets/misc/particle_smallest.png';
 import Wall from './assets/tilemaps/tiles/gridtiles.png';
 import Kaboom from './assets/games/invaders/explode.png';
+import {CLICK_MODES} from './consts'
 
 class Crowdc {
     constructor() {
@@ -75,6 +76,7 @@ class Crowdc {
         this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
 
         this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        this.game.debug.text('Click mode: ' + crowdc.state.clickMode, x, y += 2 * yi, '#fff', 'sans 10px');
 
         this.game.debug.inputInfo(x, y += 2 * yi);
         this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
@@ -116,6 +118,10 @@ class Crowdc {
             this.state.resetSprites()
         });
 
+        let k_key = this.game.input.keyboard.addKey(Phaser.Keyboard.K);
+        k_key.onDown.add(() => this.state.clickMode = CLICK_MODES.KILL);
+        let w_key = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        w_key.onDown.add(() => this.state.clickMode = CLICK_MODES.WALL);
 
         let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         a_key.onDown.add(() => {
