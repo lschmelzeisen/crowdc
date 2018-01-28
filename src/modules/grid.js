@@ -1,6 +1,6 @@
 import {drawPlus} from "../helpers";
 
-export const GRID_SIZE = 16;
+export const GRID_SIZE = 32;
 
 export default class Grid {
     constructor(state) {
