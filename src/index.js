@@ -16,11 +16,10 @@ import './style.css';
 import OrbBlue from './assets/custom/orb-blue.png';
 import OrbRed from './assets/custom/orb-red.png';
 import OrbGreen from './assets/custom/orb-green.png';
-import Grass from './assets/tests/grass1.png';
-import Harrier from './assets/tests/harrier3.png';
-import Particle from './assets/misc/particle_smallest.png';
-import Wall from './assets/tilemaps/tiles/gridtiles.png';
-import Kaboom from './assets/games/invaders/explode.png';
+import Grass from './assets/custom/grass.png';
+import Wall from './assets/custom/wall.png';
+import Kaboom from './assets/custom/explosion.png';
+import {CLICK_MODES} from './consts'
 
 class Crowdc {
     constructor() {
@@ -74,7 +73,8 @@ class Crowdc {
 
         this.game.debug.text(`FPS (now/min/max): ${crowdc.game.time.fps}/${crowdc.game.time.fpsMin}/${crowdc.game.time.fpsMax}`, x, y += yi, '#fff', 'sans 10px');
 
-        this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        // this.game.debug.text('Sprite count: ' + crowdc.state.spriteCount, x, y += 2 * yi, '#fff', 'sans 10px');
+        this.game.debug.text('Click mode: ' + crowdc.state.clickMode + ' (switch with k/w)', x, y += 2 * yi, '#fff', 'sans 10px');
 
         this.game.debug.inputInfo(x, y += 2 * yi);
         let pos = this.state.map.calcCameraCoords(new Phaser.Point(
@@ -82,6 +82,8 @@ class Crowdc {
             this.state.game.input.activePointer.worldY));
         this.game.debug.text(pos, x, y += 6 * yi);
         this.game.debug.cameraInfo(crowdc.game.camera, x, y += 2 * yi);
+        //this.game.debug.inputInfo(x, y += 2 * yi);
+        //this.game.debug.cameraInfo(crowdc.game.camera, x, y += 6 * yi);
     }
 
     /**
@@ -99,9 +101,7 @@ class Crowdc {
         this.game.load.image('orb-red', OrbRed);
         this.game.load.image('orb-green', OrbGreen);
         this.game.load.image('grass', Grass);
-        this.game.load.image('harrier', Harrier);
-        this.game.load.image('particle', Particle);
-        this.game.load.spritesheet('wall', Wall, 32, 32);
+        this.game.load.spritesheet('wall', Wall);
         this.game.load.spritesheet('kaboom', Kaboom, 128, 128);
     }
 
@@ -118,6 +118,10 @@ class Crowdc {
         let x_key = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
         x_key.onDown.add(() => this.state.resetSprites());
 
+        let k_key = this.game.input.keyboard.addKey(Phaser.Keyboard.K);
+        k_key.onDown.add(() => this.state.clickMode = CLICK_MODES.KILL);
+        let w_key = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+        w_key.onDown.add(() => this.state.clickMode = CLICK_MODES.WALL);
 
         let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         a_key.onDown.add(() => {

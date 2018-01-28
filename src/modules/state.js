@@ -1,12 +1,14 @@
 import Walls from "./walls";
 import Grid from "./grid";
 import Explosions from "./explosions";
+import {CLICK_MODES} from '../consts';
 
 export default class State {
     constructor(game) {
         this.spriteCount = 0;
         this.sprites = [];
         this.game = game;
+        this.clickMode = CLICK_MODES.KILL;
     }
 
     create(map) {
@@ -27,9 +29,8 @@ export default class State {
     }
 
     update() {
-        // this.explosions.update();
         this.map.handleScrolling();
-        // this.walls.update();
+        this.walls.update();
     }
 
     addSprite(spriteClassName) {

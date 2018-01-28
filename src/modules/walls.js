@@ -1,4 +1,5 @@
 import {GRID_SIZE} from "./grid";
+import {CLICK_MODES} from '../consts';
 
 const WALL_SCALE_FACTOR = GRID_SIZE / 32; // 32 is image size
 
@@ -19,19 +20,22 @@ export default class Walls {
     }
 
     buildWall() {
-        let pos = this.state.map.calcCameraCoords(new Phaser.Point(
-            this.state.game.input.activePointer.worldX,
-            this.state.game.input.activePointer.worldY));
+        console.log(this.state.clickMode);
+        if (this.state.clickMode === CLICK_MODES.WALL) {
+            let pos = this.state.map.calcCameraCoords(new Phaser.Point(
+                this.state.game.input.activePointer.worldX,
+                this.state.game.input.activePointer.worldY));
 
-        if ((pos.x >= 0 && pos.x < this.state.map.width) &&
-            (pos.y >= 0 && pos.y < this.state.map.height)) {
-            pos = this.state.grid.toGridCoords(pos.x, pos.y);
+            if ((pos.x >= 0 && pos.x < this.state.map.width) &&
+                (pos.y >= 0 && pos.y < this.state.map.height)) {
+                pos = this.state.grid.toGridCoords(pos.x, pos.y);
 
-            if (!this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE]) {
-                this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE] = true;
+                if (!this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE]) {
+                    this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE] = true;
 
-                let sprite = this.walls.create(pos.x, pos.y, 'wall', 0);
-                sprite.scale.set(WALL_SCALE_FACTOR, WALL_SCALE_FACTOR);
+                    let sprite = this.walls.create(pos.x, pos.y, 'wall', 0);
+                    sprite.scale.set(WALL_SCALE_FACTOR, WALL_SCALE_FACTOR);
+                }
             }
         }
     }
