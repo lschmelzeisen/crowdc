@@ -17,6 +17,7 @@ import Wall from './assets/tilemaps/tiles/gridtiles.png';
 import Map from './modules/map.js';
 import Grid from './modules/grid.js';
 import Walls from './modules/walls.js';
+import {findPath} from "./modules/pathfinding";
 
 
 import {HealthyHumanFactory, InfectedHumanFactory, SickHumanFactory} from './modules/human.js';
@@ -66,6 +67,9 @@ class Crowdc {
         crowdc.game.stage.backgroundColor = '#161616';
 
         crowdc.addInputListeners();
+
+
+
 
         // Spawn 1 red guy immediately
         crowdc.state.addSprite(SickHumanFactory);
@@ -120,10 +124,17 @@ class Crowdc {
         g_key.onDown.add(() => this.state.addSprite(HealthyHumanFactory));
 
         let x_key = this.game.input.keyboard.addKey(Phaser.Keyboard.X);
-        x_key.onDown.add(() => {
-            this.state.resetSprites()
-        });
+        x_key.onDown.add(() => this.state.resetSprites());
 
+        let p_key = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
+        p_key.onDown.add(() => {
+            let points = findPath(new Phaser.Point(32,32),new Phaser.Point(480,480),this.state);
+            console.log(points);
+            let graphics = this.state.game.add.graphics(0, 0);
+            this.state.map.group.add(graphics);
+            graphics.beginFill(0xFF0000, 1);
+            points.forEach(p => graphics.drawCircle(p.x,p.y,10));
+        });
 
         let a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
         a_key.onDown.add(() => {

@@ -1,13 +1,16 @@
 import {getRandomGridPoint} from '../helpers/index'
 import {HUMAN_HEALTH} from '../consts'
-
+import {findPath} from "./pathfinding";
+import {GRID_SIZE} from "./grid";
 
 export class Human {
 
     constructor(state, health) {
         this.state = state;
 
-        this.origin = getRandomGridPoint(this.state.map.width, this.state.map.height);
+        //this.origin = getRandomGridPoint(this.state.map.width, this.state.map.height);
+
+        this.origin = new Phaser.Point(32+16,32+16);
 
         this.sprite = this.state.game.add.sprite(this.origin.x, this.origin.y, 'orb-red');
         this.sprite.anchor.setTo(0.5, 0.5);
@@ -15,33 +18,56 @@ export class Human {
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputDown.add(() => this.destroy(), this);
 
-        this.moveToTarget();
+        // this.moveToTarget();
         this.sprite.update = () => this.update();
         this.setHealth(health);
     }
 
+    setTarget(target) {
+        this.target = target;
+        this.movementPlan = findPath(this.sprite,target,this.state);
+    }
+
     moveToTarget() {
-        this.target = getRandomGridPoint(this.state.map.width, this.state.map.height);
-
-        const SPEED = 150; // px/s
-        let distance = this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
-        let duration = (distance / SPEED) * 1000;
-
-        this.sprite.rotation = this.state.game.physics.arcade.moveToObject(this.sprite, this.target, SPEED, duration);
+        // this.target = getRandomGridPoint(this.state.map.width, this.state.map.height);
+        //
+        // const SPEED = 150; // px/s
+        // let distance = this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y);
+        // let duration = (distance / SPEED) * 1000;
+        //
+        // this.sprite.rotation = this.state.game.physics.arcade.moveToObject(this.sprite, this.target, SPEED, duration);
     }
 
     update() {
+
+        // path(new Phaser.Point(this.sprite.x,this.sprite.y), this.target, this.state);
+        //
         if (this.target) {
             if (this.isHealthy()) {
                 this.betterGetObjectsAtLocation(this.state.sickGroup, () => {
                     this.infect()
                 })
             }
+            if (this.movementPlan.length > 0) {
+                let point = this.movementPlan[0];
+                if (point.distance(this.sprite) < 10) {
+                    this.movementPlan.shift();
+                } else {
+                    this.sprite.rotation = this.state.game.physics.arcade.moveToObject(this.sprite, point, 150);
 
-            if (this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) < 3) {
-                this.sprite.body.velocity.setTo(0, 0);
-                this.moveToTarget()
-            }
+                }
+            } else this.target = null;
+
+            // if (this.state.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) < 3) {
+            //     this.sprite.body.velocity.setTo(0, 0);
+            //     this.moveToTarget();
+            // }
+        } else {
+            let point = null;
+            do {
+                point = getRandomGridPoint(this.state.map.width, this.state.map.height);
+            } while (this.state.walls.convertedMatrix[Math.floor(point.y/GRID_SIZE)][Math.floor(point.x/GRID_SIZE)]);
+            this.setTarget(point);
         }
 
     }

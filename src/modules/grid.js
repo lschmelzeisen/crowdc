@@ -17,4 +17,8 @@ export default class Grid {
     toGridCoords(x, y) {
         return new Phaser.Point(x - x % GRID_SIZE, y - y % GRID_SIZE);
     }
+
+    toGridCoordsFromPos(p) {
+        return this.toGridCoords(p.x, p.y);
+    }
 }

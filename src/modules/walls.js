@@ -10,12 +10,18 @@ export default class Walls {
         this.wallMatrix = new Array(GRID_SIZE);
         for (let i = 0; i !== GRID_SIZE; ++i)
             this.wallMatrix[i] = Array(GRID_SIZE).fill(false);
+
+        this.convertedMatrix = new Array(GRID_SIZE);
+        for (let i = 0; i !== GRID_SIZE; ++i)
+            this.convertedMatrix[i] = Array(GRID_SIZE).fill(false);
     }
 
     update() {
         if (this.state.game.input.activePointer.isDown)
             this.buildWall();
     }
+
+
 
     buildWall() {
         let pos = this.state.map.calcCameraCoords(new Phaser.Point(
@@ -28,6 +34,10 @@ export default class Walls {
 
             if (!this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE]) {
                 this.wallMatrix[pos.y / GRID_SIZE][pos.x / GRID_SIZE] = true;
+                this.convertedMatrix[(pos.y / GRID_SIZE)][(pos.x / GRID_SIZE)] = true;
+                this.convertedMatrix[(pos.y / GRID_SIZE)+1][(pos.x / GRID_SIZE)] = true;
+                this.convertedMatrix[(pos.y / GRID_SIZE)][(pos.x / GRID_SIZE)+1] = true;
+                this.convertedMatrix[(pos.y / GRID_SIZE)+1][(pos.x / GRID_SIZE)+1] = true;
 
                 let sprite = this.walls.create(pos.x, pos.y, 'wall', 0);
                 const SCALE_FACTOR = GRID_SIZE / 32; // 32 is image size

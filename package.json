@@ -29,6 +29,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "js-priority-queue": "^0.1.5",
     "phaser-ce": "^2.10.0",
     "webfontloader": "^1.6.28"
   }
