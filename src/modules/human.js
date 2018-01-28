@@ -47,8 +47,6 @@ export class Human {
     }
 
     destroy() {
-        if (this.targetSprite)
-            this.targetSprite.destroy();
         this.state.removeSprite(this);
     }
 
