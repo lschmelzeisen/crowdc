@@ -13,7 +13,7 @@ export default class Walls {
     }
 
     update() {
-        if (this.state.game.input.activePointer.isDown)
+        if (this.state.game.input.activePointer.leftButton.isDown)
             this.buildWall();
     }
 
