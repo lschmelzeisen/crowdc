@@ -40,7 +40,5 @@ export default class Explosions {
             getObjectsCollidingBounds(this.state.game, bounds,
                 group, (humanSprite) => humanSprite.sprite.human.destroyWithClick());
         }
-
-        setTimeout(() => explosion.destroy(), 50);
     }
 }
